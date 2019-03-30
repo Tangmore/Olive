@@ -31,7 +31,7 @@
         <!-- 热门电影 -->
         <div class="container">
             <div class="row mt-5 pt-4">
-            <div class="col-9">
+            <div class=" col-sm-12 col-md-9">
                 <div class="row ">
                     <div class="text-left pb-4 ">
                         <span class="pop_title">热门电影</span>
@@ -52,7 +52,7 @@
                     </div>
                 </div>
 
-                <div class="row">
+                <div class="row"> 
                     <div class="text-left pb-4">
                         <span class="pop_title">热门推荐</span>
                     </div>
@@ -69,7 +69,7 @@
                 </div>
 
             </div>
-            <div class="col-3 ">
+            <div class="col-md-3  orderWeekBox">
                 <p class="mb-4"> 一周口碑榜</p>
                 <div class="orderByWeek">
                     <table class="w-100">

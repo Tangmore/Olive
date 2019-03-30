@@ -151,6 +151,9 @@ body{
      .carouselBox  .link a{
         font-size: 0.8rem;
     }
+    .orderWeekBox{
+        display: none;
+    }
 
 }
 

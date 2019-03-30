@@ -1,5 +1,5 @@
 <template>
-    <div id="travel-details" class="app-travel-details position-relative">
+    <div id="travel-details" class="app-travel-details position-relative ">
         <div class="border-bottom">
             <div class="container">
                 <div class=" d-flex justify-content-between">

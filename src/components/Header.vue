@@ -41,61 +41,20 @@
                       </div>
                       <ul id="nav-items" class="d-md-inline-flex justify-content-md-around m-0">
                           <li><router-link class="iconfont icon-shouyefill" to="/index" data-target="item"></router-link></li>
-                          <li><router-link to="/spots" data-target="item">影讯</router-link></li>
-                          <li><router-link to="/travels" data-target="item">分类</router-link></li>
-                          <li><router-link to="/" data-target="item">购票</router-link></li>
-                          <li><router-link to="/strategy"  data-target="item">影评</router-link></li>
+                          <li><router-link to="/movies" data-target="item">电影</router-link></li>
+                          <li><router-link to="/order" data-target="item">排行榜</router-link></li>
+                          <li><router-link to="/tickets" data-target="item">购票</router-link></li>
+                          <li><router-link to="/comments"  data-target="item">影评</router-link></li>
                           <li><router-link class="iconfont icon-some" to="/" data-target="item"></router-link></li>
                       </ul>
                   </div>
               </div>
             <!--搜索icon-->
-              <a class="d-none col-auto d-md-inline order-md-3 ml-2 iconfont  icon-sousuo" data-trigger="searchIcon"></a>
+              <div class="d-none col-auto d-md-inline order-md-3   h-input-prefix-icon">
+                    <Search @search="search" v-model="searchText2" position="front" trigger-type="input"></Search>
+                  </div>
           </nav>
-          <!--导航栏end-->
-
-          <!--搜索栏start-->
-          <div id="search-page" class="fixed-top bg-white">
-              <p>
-                  <button id="close-icon" class="btn bg-transparent iconfont icon-guanbi"></button>
-              </p>
-              <form class="row w-75 m-auto">
-                  <!--按地方搜索-->
-                  <div class="col-5 card">
-                      <div id="search-address" class="card-header d-inline-flex align-items-center">
-                          <span class="iconfont icon-dizhi"></span>
-                          <input class="form-control border-0 bg-transparent" type="text" placeholder="请选择您查询的地区">
-                          <span class="iconfont icon-xiala"></span>
-                      </div>
-                          <div class="card-body d-none" data-target="content">
-                              <!--地点1-->
-                              <div>
-                                  <div class="search-list d-flex align-items-start">
-                                      <div class=" d-inline-block">
-                                          <h5 class="iconfont icon-dizhi"></h5>
-                                      </div>
-                                      <div class="d-inline-block">
-                                          <h5>中国</h5>
-                                          <p>重庆</p>
-                                      </div>
-                                  </div>
-                              </div>
-                          </div>
-                  </div>
-                      <!--全站搜索-->
-                  <div class="col-5">
-                      <div id="search-all" class="d-flex align-items-center card-header">
-                          <span class="iconfont icon-sousuo"></span>
-                          <input class="form-control bg-transparent border-0" type="text" placeholder="请输入您要查询的内容">
-                      </div>
-                  </div>
-                  <div class="col-2">
-                          <button id="search-btn" class="btn pr-4 pl-4" >搜索</button>
-                  </div>
-                  <div class="bg-white p-3"></div>
-              </form>
-          </div>
-              <!--搜索栏end-->
+      
       </div>   
     </header>
 </template>
@@ -107,7 +66,8 @@
         data(){
             return {
                 activeTab:"index",
-               message:"header的生命周期："
+               message:"header的生命周期：",
+               searchText2: null
             }
         },
         props:[],//接收来自父子件的数据
@@ -117,6 +77,9 @@
                 this.$store.commit("signout");
                 this.$router.push('/index');
             },
+            search(data) {
+      this.$Message.info(`查询“${data}”`);
+    }
         },
         mounted() {
             getHeaderEffect();

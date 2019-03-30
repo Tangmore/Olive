@@ -1,3 +1,28 @@
+.orderByType tr{
+    border-bottom: 1px solid #ccc;
+    line-height: 30px;
+}
+.orderByType tr td:first-child{
+    text-align: right;
+    width: 8%;
+}
+.orderByType tr td:last-child{
+    text-align: left;
+    text-indent: 10px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
 /* tab */
 .strategy .imgLg{
     opacity: 0.9;

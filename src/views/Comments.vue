@@ -8,20 +8,20 @@
                 <img class="w-100" :src="bigImg.src">
             </picture>  
         </div>
-        <div class="container p-0">
+        <div class="container p-0 mt-5">
             <div id="navigation" class="row border-bottom m-auto pt-2">
                 <div class="col-12 col-md order-2 order-md-0 d-flex pt-2 m-0 align-items-end justify-content-around justify-content-md-start" @click="changeState($event)">
-                    <span class="pb-2 pb-md-0 mb-0 ml-sm-4  h-100" :class="state.tab==='hot'?'active':''" data-tab="hot">热门游记</span>
+                    <span class="pb-2 pb-md-0 mb-0 ml-sm-4  h-100" :class="state.tab==='hot'?'active':''" data-tab="hot">热门评论</span>
                     <span class="pb-2 pb-md-0 mb-0 ml-sm-4  h-100" :class="state.tab==='latest'?'active':''" data-tab="latest">最近发布</span>
-                    <span class="pb-2 pb-md-0 mb-0 ml-sm-4 mr-0 h-100" :class="state.tab==='all'?'active':''" data-tab="all">全部游记</span>
+                    <span class="pb-2 pb-md-0 mb-0 ml-sm-4 mr-0 h-100" :class="state.tab==='all'?'active':''" data-tab="all">全部评论</span>
                 </div>
                 <div class="co-12 col-md-auto order-0 order-md-2 text-center text-md-right">
-                    <button class="btn btn-group-sm btn-warning mr-1 mb-2 mt-4 mt-md-2" type="button"><router-link to="/" class="iconfont icon-youji1">我的游记</router-link></button>
-                    <button class="btn btn-group-sm btn-warning ml-1 mb-2 mt-4 mt-md-2" type="button" @click="jumpToAdd()"><a herf="javascript:;" class="iconfont icon-fabiaoyouji">发表游记</a></button>
+                    <button class="btn btn-group-sm btn-warning mr-1 mb-2 mt-4 mt-md-2" type="button"><router-link to="/" class="iconfont icon-youji1">我的评论</router-link></button>
+                    <button class="btn btn-group-sm btn-warning ml-1 mb-2 mt-4 mt-md-2" type="button" @click="jumpToAdd()"><a herf="javascript:;" class="iconfont icon-fabiaoyouji">发表评论</a></button>
                 </div>
             </div>
-            <!-- 加载travelbox组件 -->
-            <TravelBox :state="state"></TravelBox>
+            <!-- 加载CommentBox组件 -->
+            <CommentBox :state="state"></CommentBox>
             <div id="page-nav" class="row w-100 m-0">
                 <ul class="col-12 col-md d-flex justify-content-center justify-content-md-start align-items-center mb-1 p-0" @click="changActive($event)">
                     
@@ -41,7 +41,7 @@
     </section>
 </template>
 <script>
-import TravelBox from "@/views/travel_box/Travel_box.vue"
+import CommentBox from "@/views/travel_box/Comment_box.vue"
 import Toast from "@/components/toast.vue"
 export default {
     data(){
@@ -68,7 +68,7 @@ export default {
         }
     },
     components:{
-        TravelBox,
+        CommentBox,
         Toast
     },
     watch: {
@@ -156,5 +156,5 @@ export default {
 }
 </script>
 <style>
-    @import '../assets/css/travels.css';
+    @import '../assets/css/index.css';
 </style>

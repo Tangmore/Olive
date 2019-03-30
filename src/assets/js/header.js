@@ -46,33 +46,6 @@ import $ from 'jquery'
             })
             //endregion header-nav事件
 
-             //region search-page搜索栏--start
-            // 关闭icon事件
-            $("#close-icon").click( function () {
-                $("#search-page").removeClass("d-block");
-            })
-            //search-address事件
-            var $searchAddress = $("#search-address");
-            $searchAddress.click(function () {
-                $("#search-page [data-target=content]").removeClass("d-none");
-                $(this).css("border","1px solid rgba(40, 167, 69, 0.7)")
-                    .children(":nth-child(2)").focus();
-                $(this).parent().next().children(":first").prop("style","");
-            })
-            $("#search-address").children(":nth-child(2)").on("focus", function () {
-                $searchAddress.next().removeClass("d-none");
-            }).on("blur", function () {
-                $searchAddress.next().addClass("d-none");
-            })
-
-            //search-all事件
-            $("#search-all").click(function () {
-                $(this).css("border","1px solid rgba(40, 167, 69, 0.7)")
-                .children(":nth-child(2)").focus();
-                $(this).parent().prev().children(":first").prop("style","");
-            })
-            //endregion search-page搜索栏--end
-
             $("#nav-items").on("click","li [data-target='item']",function(){
                 $("[data-trigger=navIcon][data-status=1]").trigger("click");
             })

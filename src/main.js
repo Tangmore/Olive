@@ -8,7 +8,7 @@ import axios from 'axios'
 import './assets/css/bootstrap.css'
 import './assets/css/base.css'
 // import './assets/css/iconfont.css'
-
+require("heyui/themes/index.less")
 import HeyUI from 'heyui'
 Vue.use(HeyUI);
 

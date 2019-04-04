@@ -5,15 +5,11 @@
             <div class="row carouselBox border position-relative mr-0 ml-0 ">
                 <div class="col-sm-12 imgLg p-0 ">
                     <div class="box" :class="carousel.ind==index?'first':''" v-for="(item,index) in carousel.carouselList">
-                        <picture>
+                        <picture style="width: 100%">
                             <source media="(min-width: 999px)" :srcset="item.lg_url">
                             <source media="(max-width:1000px)" :srcset="item.md_url">
                             <img class="w-100" :src="item.src">
                         </picture>
-                        <!-- <div class="position-absolute">
-                            <h4>{{item.day}}<span>/{{item.years}}</span>  </h4>
-                            <p >{{item.tip}}</p>
-                        </div> -->
                     </div>
                 </div>
 
@@ -28,99 +24,155 @@
             </div>
         </div>
 
-        <!-- 热门电影 -->
-        <div class="container">
+
+        <div class="container mb-5">
             <div class="row mt-5 pt-4">
-            <div class=" col-sm-12 col-md-9">
-                <div class="row ">
-                    <div class="text-left pb-4 ">
-                        <span class="pop_title">热门电影</span>
+                <div class=" col-sm-12 col-md-9">
+                    <!-- 热门电影 -->
+                    <div class="popMovie">
+                        <div class="row">
+                            <div class="text-left pb-4">
+                                <span class="pop_title">热门电影</span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-2 col-md-2 col-sm-3 col-3  mb-2" v-for="item in  guide.imgList">
+                                <div class="">
+                                    <img src="http://127.0.0.1:83/img/movieImg/love/mo6.jpg" alt="" class="w-100" @click="$router.push('/strategy_details?pid='+item.pid)">
+                                    <p>
+                                        比悲伤更悲伤的故事
+                                        <strong style="color: #e09015">8.2</strong>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="btn btn-light p-2 bordered w-100 mt-2">
+                            <router-link class="text-center" to="/movies"> 查看全部电影&gt;</router-link>
+                        </div>
                     </div>
-                    <div class="row">
-                        <div class="col-lg-3 col-md-3 col-sm-4 col-4  mb-2" v-for="item in  guide.imgList">
-                            <div class="">
-                                <img :src="item.img" alt="" class="w-100" @click="$router.push('/strategy_details?pid='+item.pid)">
-                                <p>名称{{item.spot}}
-                                    <span>评分{{item.tview}}</span>
-                                </p>
+                    <!-- 热门推荐 -->
+                    <div class="popRecommend">
+                        <div class="row">
+                            <div class="text-left pb-4">
+                                <span class="pop_title">热门推荐</span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-3 col-md-3 col-sm-4 col-4  mb-2" v-for="item in  guide.imgList">
+                                <div class="">
+                                    <img src="http://127.0.0.1:83/img/movieImg/love/mo6.jpg" alt="" class="w-100" @click="$router.push('/strategy_details?pid='+item.pid)">
+                                    <p>
+                                        比悲伤更悲伤的故事
+                                        <strong style="color: #e09015">8.2</strong>
+                                    </p>
+                                </div>
                             </div>
                         </div>
                     </div>
-
-                    <div class="btn btn-light p-2 bordered w-100">
-                        <router-link class="text-center" to="/Spots"> 查看全部电影&gt;</router-link>
-                    </div>
-                </div>
-
-                <div class="row"> 
-                    <div class="text-left pb-4">
-                        <span class="pop_title">热门推荐</span>
-                    </div>
-                </div>
-
-
-                <div class="row">
-                        <div class="text-left pb-4">
+                    <!-- 热门评论 -->
+                    <div class="popComment">
+                        <div class="row">
+                            <div class="text-left pb-4">
                                 <span class="pop_title">热门影评</span>
                             </div>
-                    <div class="btn btn-light p-2 bordered w-100">
-                        <router-link class="text-center" to="/Spots"> 查看全部电影&gt;</router-link>
+                        </div>
+                        <!-- <div class="col-4  mb-2">
+                                    <img src="http://127.0.0.1:83/img/movieImg/love/mo6.jpg" alt="" class="w-100" @click="$router.push('/strategy_details?pid='+item.pid)">
+                                </div>
+                                <span class="col-8  mb-2">
+                                    wwwwww
+                                </span> -->
+                        <div id="comments" class="pt-4 pl-2 pr-2 container">
+                            <div class="row ml-0 mr-0 mb-3  position-relative" 
+                              @click="jumpToDetail(item.tid,$event)">
+                                <div class="col-3">
+                                    <img class="img-fluid p-0 w-60" src="http://127.0.0.1:83/img/movieImg/love/mo6.jpg">
+                                </div>
+                                <div class="col-9">
+                                    <div class="one-row ">
+                                        <div class="row text-muted m-0">
+                                            <div class="col text-left p-0">
+                                                <p>相伤害”——步履不停的思考生命的本质 </p>
+                                                <p class="">
+                                                    <span>云淡风轻</span>
+                                                    评论
+                                                    <span>《步履不停》</span>
+                                                </p>
+                                                <Rate v-model="rate"></Rate>
+                                                <p class="content">
+                                                    “所谓主角，是指即便没有出现在画面上，但仍然支配着整部电影的人。但到 底支配着什么呢？就是台词动作、情感，有时还包括剪辑。总而言之， 电影主角就是与镜头这一侧的导演呼吸频率同步的人。”...
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <div class="position-absolute" style="bottom: 10px;right: 10px">
+                                            <div class="text-right">
+
+                                                <!-- <span class="iconfont icon-browse">&nbsp;</span>
+                                                <span>浏览数</span> -->
+                                                <span class="iconfont icon-love" style="color: #fcc">&nbsp;</span>
+                                                <span>点赞数</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="btn btn-light p-2 bordered w-100 mt-5">
+                            <router-link class="text-center" to="/comments"> 查看全部影评&gt;</router-link>
+                        </div>
                     </div>
                 </div>
-
-            </div>
-            <div class="col-md-3  orderWeekBox">
-                <p class="mb-4"> 一周口碑榜</p>
-                <div class="orderByWeek">
-                    <table class="w-100">
-                        <tr>
-                            <td>1</td>
-                            <td>111</td>
-                        </tr>
-                        <tr>
-                            <td>2</td>
-                            <td>222</td>
-                        </tr>
-                        <tr>
-                            <td>3</td>
-                            <td>333</td>
-                        </tr>
-                        <tr>
-                            <td>4</td>
-                            <td>444</td>
-                        </tr>
-                        <tr>
-                            <td>5</td>
-                            <td>555</td>
-                        </tr>
-                        <tr>
-                            <td>6</td>
-                            <td>666</td>
-                        </tr>
-                        <tr>
-                            <td>7</td>
-                            <td>777</td>
-                        </tr>
-                        <tr>
-                            <td>8</td>
-                            <td>888</td>
-                        </tr>
-                        <tr>
-                            <td>9</td>
-                            <td>999</td>
-                        </tr>
-                        <tr>
-                            <td>10</td>
-                            <td>100</td>
-                        </tr>
-                    </table>
+                <div class="col-md-3  orderWeekBox">
+                    <p class="mb-4"> 一周口碑榜</p>
+                    <div class="orderByWeek">
+                        <table class="w-100">
+                            <tr>
+                                <td>1</td>
+                                <td>111</td>
+                            </tr>
+                            <tr>
+                                <td>2</td>
+                                <td>222</td>
+                            </tr>
+                            <tr>
+                                <td>3</td>
+                                <td>333</td>
+                            </tr>
+                            <tr>
+                                <td>4</td>
+                                <td>444</td>
+                            </tr>
+                            <tr>
+                                <td>5</td>
+                                <td>555</td>
+                            </tr>
+                            <tr>
+                                <td>6</td>
+                                <td>666</td>
+                            </tr>
+                            <tr>
+                                <td>7</td>
+                                <td>777</td>
+                            </tr>
+                            <tr>
+                                <td>8</td>
+                                <td>888</td>
+                            </tr>
+                            <tr>
+                                <td>9</td>
+                                <td>999</td>
+                            </tr>
+                            <tr>
+                                <td>10</td>
+                                <td>100</td>
+                            </tr>
+                        </table>
+                    </div>
                 </div>
             </div>
-
-
         </div>
         </div>
-        
+
         <Toast v-if="loginAlert" :toastMsg="loginAlertMsg" :toastClass="loginAlertBgColor"></Toast>
     </section>
 </template>
@@ -157,17 +209,11 @@
                     timer: null,
                     ind: 0
                 },
-                tab: {
-                    barList: ['亚洲', '欧洲', '美洲', '全球'],
-                    ind: 0,
-                    imgList: []
-                },
+                // 评分
+                rate: 3,
+
                 guide: {
                     imgList: ['', '', '', '', '', '', '', '', '', '', '', '']
-                },
-
-                travel: {
-                    travelList: ['', '', '', '']
                 },
                 loginAlert: false,
                 loginAlertMsg: "请先登录 !",
@@ -193,50 +239,14 @@
                     this.carousel.carouselList = res.data;
                 })
             },
-
-
-            //http://localhost:3001/index/tab
-            loadTab() {
-                this.axios.get(this.$store.state.url + '/index/tab'
-                ).then(res => {
-                    this.tab.imgList = res.data;
-                })
-            },
-            loadGuide() {
-                this.axios.get(this.$store.state.url + '/index/guide'
-                ).then(res => {
-                    this.guide.imgList = res.data;
-                    for (var item of this.guide.imgList) {
-                        item.img = item.img.split('&')[0];
-                    }
-                    //  console.log(this.guide.imgList)
-                })
-            },
-
-            loadpopTravels() {
-                this.axios.get(this.$store.state.url + "/index/travel").then((res => {
-                    //  console.log(res)
-                    this.travel.travelList = res.data;
-                }))
-            },
-
-            toAddtravel() {
-                if (this.userMsg) {
-                    this.$router.push('/add_travel')
-                } else {
-                    this.loginAlert = true;
-                    setTimeout(() => {
-                        this.loginAlert = false;
-                    }, 2000)
-                }
-            }
+            changeActiveIndex(i){
+            this.activeIndex = 1;
+        },
         },
         created() {
             this.loadCarousel();
             this.carouselTask();
-            this.loadTab();
-            this.loadGuide();
-            this.loadpopTravels();
+
         },
         computed: {
             ...mapState(['userMsg'])

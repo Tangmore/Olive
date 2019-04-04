@@ -21,7 +21,7 @@
                       <ul class="pl-3 pr-3 speed">
                           <li class="text-left border-bottom" v-cloak>{{this.$store.state.userMsg?this.$store.state.userMsg.user:''}}</li>
                           <li class="text-left border-bottom"><router-link to="/personal" class="iconfont icon-touxiang">&nbsp;个人中心</router-link> </li>
-                          <li class="text-left border-bottom"><router-link to="/add_travel" class="iconfont icon-fabiaoyouji">&nbsp;发表游记</router-link></li>
+                          <!-- <li class="text-left border-bottom"><router-link to="/add_travel" class="iconfont icon-fabiaoyouji">&nbsp;发表游记</router-link></li> -->
                           <li class="text-left border-bottom"><a  class="iconfont icon-tuichu" @click="signout">&nbsp;退出</a></li>
                       </ul>
                   </div>
@@ -73,7 +73,6 @@
         props:[],//接收来自父子件的数据
         methods:{
             signout(){
-                this.axios.get(this.$store.state.url+"/user/signout");
                 this.$store.commit("signout");
                 this.$router.push('/index');
             },

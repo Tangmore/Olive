@@ -7,7 +7,8 @@
                     <small id="registerForm-alert">{{registerForm.alert.msg.user?registerForm.alert.msg.user:registerForm.alert.msg.upwd?registerForm.alert.msg.upwd:registerForm.alert.msg.againUpwd?registerForm.alert.msg.againUpwd:""}}&nbsp;</small>
                 </p>
                 <!-- 注册表单start -->
-                <div id="form-register" class="row pt-0 pb-0 pl-4 pr-4 m-0 my-form" :class="status=='register'?'':'d-none'">
+                <div id="form-register" class="row pt-0 pb-0 pl-4 pr-4 m-0 p-3 my-form" :class="status=='register'?'':'d-none'">
+                    <h2 style="margin: auto;color: #28a745" class="mb-2">用户注册</h2>
                     <input type="text" name="uname" id="uname-reg" class="form-control p-2 mb-2" :class="registerForm.userVerifyStyle" placeholder="手机号"
                         v-model="registerForm.user" @blur="verifyUser">
                     <input type="password" name="upwd" id="upwd-reg" class="form-control p-2 mb-2" :class="registerForm.upwdVerifyStyle" placeholder="密码"
@@ -37,7 +38,8 @@
                 <p v-show="status==='login'" class="pl-4 pt-2 m-0" :class="loginForm.alert.style">
                     <small id="alert" :class="loginForm.alert.show?'':'v-hide'">{{loginForm.alert.msg}}&nbsp;</small>
                 </p>
-                <div id="form-login" class="row pt-0 pb-4 pl-4 pr-4 m-0 my-form" :class="status=='login'?'':'d-none'">
+                <div id="form-login" class="row pt-0 pb-4 pl-4 pr-4 p-5 m-0 my-form" :class="status=='login'?'':'d-none'">
+                    <h2 style="margin: auto;color: #28a745" class="mb-2">用户登录</h2>
                     <input type="text" name="uname" id="uname-login" class="form-control p-2 mb-2" placeholder="您的手机号" v-model="loginForm.user">
                     <input type="password" name="upwd" id="upwd-login" class="form-control p-2 mb-2" placeholder="您的密码" v-model="loginForm.upwd">
                     <p class="w-100 text-right m-0">
@@ -51,7 +53,7 @@
                 </div>
                 <!-- 登录表单end -->
                 <div class="border-bottom"></div>
-                <div class="pl-4 pr-4">
+                <!-- <div class="pl-4 pr-4">
                     <p class="text-muted mt-2 mb-1">
                         <small>第三方账户登录</small>
                     </p>
@@ -60,7 +62,7 @@
                         <a class="iconfont icon-weixin pl-3 pr-3 m-0" herf="#"></a>
                         <a class="iconfont icon-weibo pl-3 pr-3 m-0" herf="#"></a>
                     </h1>
-                </div>
+                </div> -->
             </div>
             <div class="d-flex justify-content-center pb-4 pt-2">
                 <p class="m-auto pt-1 pb-1 pl-3 pr-3">
@@ -117,6 +119,9 @@
                 this.registerForm.againUpwdVerifyStyle = "";
             }
         },
+        created(){
+            this.enterLoginORegister();
+        },
         methods: {
             changeStatus() {
                 switch (this.status) {
@@ -143,8 +148,8 @@
                     this.registerForm.userVerifyStyle = "border-danger";
                     return;
                 }
-                this.axios.get(this.$store.state.url + "/user/getList", { params: { phone: this.registerForm.user } }).then(res => {
-                    if (res.data.length == 0) {
+                this.axios.get(this.$store.state.url + "managemodule/user/checkPhone", { params: { phone: this.registerForm.user } }).then(res => {
+                    if (!res.data.state) {
                         this.registerForm.alert.msg.user = "您输入的手机号已被使用！";
                         this.registerForm.alert.show = true;
                         this.registerForm.userVerifyStyle = "border-danger";
@@ -155,6 +160,7 @@
                         this.registerForm.userVerifyStyle = "border-success";
                         return;
                     }
+                    console.log(res);
                 })
             },
             verifyUpwd() {
@@ -207,10 +213,10 @@
                     this.registerForm.againUpwdVerifyStyle == "border-success" &&
                     this.registerForm.checked) {
                     var data = { 'phone': this.registerForm.user, 'password': this.registerForm.upwd };
-                    this.axios.post(this.$store.state.url + "/user/register",
+                    this.axios.post(this.$store.state.url + "managemodule/user/addUser",
                         data).then(res => {
                             // console.log(res);
-                            if (res.data.rtnCode == 200) {
+                            if (res.data.state) {
                                 this.loginForm.alert.show = true;
                                 this.loginForm.alert.style = "text-info";
                                 this.loginForm.alert.msg = "注册成功，请登录！";
@@ -229,7 +235,7 @@
                                 this.registerForm.againUpwdVerifyStyle = "";
                                 this.registerForm.verifyStatus = false;
                             } else {
-                                console.log("服务器响应:" + res);
+                                heyui.$Message(res.data.msg);
                             }
                         })
                 }
@@ -259,10 +265,10 @@
                     return;
                 }
                 var data = { 'phone': this.loginForm.user, 'password': this.loginForm.upwd };
-                this.axios.post(this.$store.state.url + "/user/login", data).then(res => {
-                    if (res.data.rtnCode == 200) {
+                this.axios.post(this.$store.state.url + "managemodule/user/userLogin", data).then(res => {
+                    if (res.data.state) {
                         //登录成功    
-                        localStorage.setItem('token',res.data.data);
+                        sessionStorage.setItem('token', res.data.row);
                         this.$store.commit("signin");
                         this.loginForm.alert.show = false;
                         this.loginForm.alert.style = "";
@@ -270,13 +276,34 @@
                         history.go(-1);
                     } else {
                         this.loginForm.alert.show = true;
-                    
                         this.loginForm.alert.style = "text-danger";
                         this.loginForm.alert.msg = "登录账号或密码错误，请确认后再登录";
                         return;
                     }
+
                 })
+            },
+
+            enterLoginORegister() {
+                if (this.status == 'register') {
+                    document.onkeydown = e => {
+                        let _key = window.event.keyCode;
+                        if (_key === 13) {
+                            this.register()
+                        }
+                    }
+                }
+
+                 if (this.status == 'login') {
+                    document.onkeydown = e => {
+                        let _key = window.event.keyCode;
+                        if (_key === 13) {
+                            this.login()
+                        }
+                    }
+                }
             }
+
         }
     }
 </script>

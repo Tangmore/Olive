@@ -18,44 +18,45 @@
 
                     <p>
                         <span class="title pr-4">我的信息</span>
-                        <span>资料完善度</span>
-                        <b>{{comProgress}}%</b>
+                        <!-- <span>资料完善度</span>
+                        <b>{{comProgress}}%</b> -->
                     </p>
                     <form class="form-group">
                         <div class="unameDiv">
-                            <div class="row m-2 mt-3">
-                                <label for='uname' class="col-2 control-label p-0">昵称：</label>
-                                <div class="col-10">
-                                    <input type="text " class="form-control pl-0" id="uname" v-model='info.infoList.name' @blur="ackUname">
-                                    <p class="tips" v-show='unameAck.flag'>{{unameAck.tip}}</p>
-                                </div>
-                            </div>
                             <div class="row m-2 mt-2">
                                 <label for='phone' class="col-2 control-label p-0 col-2">头像:</label>
                                 <div class="col-6 col-10">
-                                    <!-- <input type="file"> -->
-                                    <Qiniu :options="options" type="image" data-type="url" v-model="file"></Qiniu>
+                                    <el-upload class="avatar-uploader" :action="uploadAction" :show-file-list="false" :on-success="handleSuccess" :before-upload="beforeImgUpload">
+                                        <img v-if="imageUrl" :src="imageUrl" class="avatar">
+                                        <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                                    </el-upload>
                                 </div>
                             </div>
-                            <div class="row m-2 mt-2">
-                                <label for='phone' class="col-2 control-label p-0 col-2">手机号:</label>
-                                <div class="col-6 col-10">
+                            <div class="row m-2 mt-3">
+                                <label for='uname' class="col-2 control-label p-0">昵称：</label>
+                                <div class="col-10">
+                                    <input type="text " class="form-control" id="uname" style='text-indent:6px' v-model='info.infoList.name' @blur="ackUname">
+                                    <p class="tips" v-show='unameAck.flag'>{{unameAck.tip}}</p>
+                                </div>
+                            </div>
+                            <div class="row m-2 mt-3">
+                                <label for='balance' class="col-2 control-label p-0">余额：</label>
+                                <div class="col-10">
+                                    <input type="text " class="form-control" disabled id="balance" style='text-indent:6px' v-model='info.infoList.balance' @blur="ackUname">
+                                    <!-- <p class="tips" v-show='unameAck.flag'>{{unameAck.tip}}</p> -->
+                                </div>
+                            </div>
+
+                            <div class="row m-2 mt-3">
+                                <label for='phone' class="col-2 control-label p-0">手机号:</label>
+                                <div class="col-10">
                                     <input type="text" class="form-control" id="phone" v-model='info.infoList.phone' @blur='ackPhone'>
                                     <p class="tips" v-show='phoneAck.flag'>{{phoneAck.tip}}</p>
                                 </div>
                             </div>
-                            <!-- <div class="row m-2 mt-2 ">
-                                <label for='email' class="col-2 control-label p-0">爱好：</label>
-                                <div class=" col-10">
-                                    <textarea class="form-control text-muted" rows="6" name='hobby' id="hobby"
-                                        placeholder="例：摄影师/徒步/潜水爱好者" v-model='info.infoList.profile' @blur='ackProfile'></textarea>         
-                                         <p class="tips" v-show='profileAck.flag' >{{profileAck.tip}}</p>
-                                </div>
-                            </div> -->
-
                             <div class="row mt-3 mb-5 pb-5">
                                 <div class="col-12 text-center">
-                                    <p class=" btn  btn-danger" @click='submitInfo' :disabled="(unameAck.flag||phoneAck.flag||emailAck.flag||profileAck.flag)">保存</p>
+                                    <p class=" btn  btn-danger" @click='submitInfo' :disabled="(unameAck.flag||phoneAck.flag||profileAck.flag)">保存</p>
                                     <p class="tips" v-show='subAck.flag'>{{subAck.tip}}</p>
                                 </div>
                             </div>
@@ -120,7 +121,6 @@
 </template>
 
 <script>
-    import qiniu from './qiniu'
     export default {
         data() {
             return {
@@ -135,13 +135,12 @@
                     ind: 0,
                 },
                 info: {
-                    infoList: { uname: '', sex: '', phone: '', email: '', profile: '', upwd: '' },
-                    originInfoList: { uname: '', sex: '', phone: '', email: '', profile: '', upwd: '' },
+                    infoList: { name: '', phone: '', imgUrl: '' ,id:''},
+                    originInfoList: { name: '', phone: '', imgUrl: '' },
                     count: 0
                 },
                 unameAck: { tip: '', flag: false },
                 phoneAck: { tip: '', flag: false, },
-                emailAck: { tip: '', flag: false },
                 profileAck: { tip: '', flag: false },
                 //提交按钮
                 subAck: { tip: '', flag: false },
@@ -156,21 +155,14 @@
                 againPwd: '',
                 pwdAckAllFlag: false,  ////当为true时才可提交密码
                 myTravelList: [],
-                options: {
-                    max_file_size: '2mb',
-                    filters: {
-                        mime_types: [
-                            { title: 'Image files', extensions: 'jpg,gif,png' }
-                        ]
-                    }
-                },
-                file: null
+                imageUrl: '',
+                uploadAction: this.$store.state.url + 'filemodule/file/uploadFile',
             }
         },
-        components: {
-            Qiniu: qiniu
-        },
         created() {
+            this.getInfo();
+        },
+        mounted() {
             this.getInfo();
         },
         computed: {
@@ -186,6 +178,37 @@
             }
         },
         methods: {
+            // 验证上传图片的格式
+            beforeImgUpload(file) {
+                // console.log(file)
+                var suffix = file.name.substring(file.name.lastIndexOf('.'));
+                var isCorr = /\.(jpg|jpeg|png|gif)/.test(suffix);
+                const isLt2M = file.size / 1024 / 1024 < 2;
+                if (!isCorr) {
+                    this.$message.error('上传图片格式只能是gif、jpg、jpeg、png!');
+                }
+                if (!isLt2M) {
+                    this.$message.error('上传图片大小不能超过 2MB!');
+                }
+                return isCorr && isLt2M;
+            },
+            // 移除图片
+            beforeRemove(file) {
+                this.$confirm(`确定移除${file.name}`, '提示', { type: 'warning' })
+                    .then(() => {
+                        this.$message.success('图片删除成功，可重新选择！');
+                    })
+                    .catch(() => {
+                        this.$message.info('已经取消删除');
+                    })
+            },
+            //上传成功后 客户端得到响应消息
+            handleSuccess(res, file) {
+                // console.log(res)
+                this.$message.success(res.msg);
+                this.info.infoList.imgUrl = res.row;
+                this.imageUrl = this.$store.state.url + res.row;
+            },
             myTravel() {
                 this.staticSty.ifShow = this.staticSty.ifShow ? false : true;
                 this.staticSty.ind = 0;
@@ -200,7 +223,6 @@
                 this.staticSty.ifShow = false;
                 this.unameAck.flag = false;
                 this.phoneAck.flag = false;
-                this.emailAck.flag = false;
                 this.profileAck.flag = false;
                 this.subAck.flag = false;
                 this.upwdAck.flag = false;
@@ -218,19 +240,20 @@
                     headers: { 'TLUSER': sessionStorage.getItem('token') }
                 }).then(res => {
                     console.log(res)
+                    this.info.infoList = res.data.row;
+                    console.log(this.info.infoList.id)
+                    if (res.data.row.imgUrl) {
+                        this.imageUrl = this.$store.state.url + res.data.row.imgUrl;
+                    }
+                    // //记录原始值看是否被改变    
+                    this.info.originInfoList.name = res.data.row.name;
+                    this.info.originInfoList.phone = res.data.row.phone;
+                    this.info.originInfoList.imgUrl = res.data.row.imgUrl;
+                    // this.info.infoList = res.data.row;
                 }).catch(err => {
                     console.log(err);
                 })
-                //  this.axios.get(this.$store.state.url+"managemodule/user/selectMyInfo",
-                // {params:{uid:this.$store.state.userMsg.uid}}).then(res=>{
-                // //记录原始值看是否被改变    
-                // this.info.originInfoList.uname=res.data[0].uname;
-                // this.info.originInfoList.phone=res.data[0].phone;
-                // this.info.originInfoList.email=res.data[0].email;
-                // this.info.originInfoList.sex=res.data[0].sex;
-                // this.info.originInfoList.profile=res.data[0].profile;
-                // this.info.infoList=res.data[0];
-                // })
+
             },
 
             //  ackEvent(reg,cur,obj,text){
@@ -256,30 +279,40 @@
             //      },
             ackUname() {
                 this.subAck.flag = false;
-                var reg = /^[a-zA-Z0-9_-]{4,16}$/;
-                if (!this.info.infoList.uname) {
+                var reg = /^[a-zA-Z0-9_-]{2,16}$/;
+                if (!this.info.infoList.name) {
                     this.unameAck.tip = '昵称不能为空！';
                     this.unameAck.flag = true;
                     this.ackAllFlag = false;
-                } else if (reg.test(this.info.infoList.uname)) {
+                } else if (reg.test(this.info.infoList.name)) {
                     this.unameAck.flag = false;
                     this.ackAllFlag = true;
                 } else {
-                    this.unameAck.tip = '昵称为4到16位（字母，数字，下划线，减号）！';
+                    this.unameAck.tip = '昵称为2到16位（字母，数字，下划线，减号）！';
                     this.unameAck.flag = true;
                     this.ackAllFlag = true;
                 }
 
-                if ((!this.unameAck.flag) && (!(this.info.infoList.uname === this.info.originInfoList.uname))) {
+                if ((!this.unameAck.flag) && (!(this.info.infoList.name === this.info.originInfoList.name))) {
                     //查询昵称是否被占用
-                    this.axios.get(this.$store.state.url + "/personal/ackuname",
-                        { params: { uname: this.info.infoList.uname } }).then(res => {
-                            if (res.data.code == 1) {
-                                this.unameAck.tip = res.data.msg;
+                    this.axios.get(this.$store.state.url + "managemodule/user/checkName",
+                        { params: { name: this.info.infoList.name } }).then(res => {
+                            // if (res.data.code == 1) {
+                            //     this.unameAck.tip = res.data.msg;
+                            //     this.unameAck.flag = true;
+                            //     this.ackAllFlag = false;
+                            // }
+                            // if (res.data.code == -1) {
+                            //     this.unameAck.tip = '';
+                            //     this.unameAck.flag = false;
+                            //     this.ackAllFlag = true;
+                            // }
+                            console.log(res);
+                            if (!res.data.state) {
+                                this.unameAck.tip = res.data.msg+'!';
                                 this.unameAck.flag = true;
                                 this.ackAllFlag = false;
-                            }
-                            if (res.data.code == -1) {
+                            } else {
                                 this.unameAck.tip = '';
                                 this.unameAck.flag = false;
                                 this.ackAllFlag = true;
@@ -305,10 +338,10 @@
                 }
                 if (!this.phoneAck.flag && (!(this.info.infoList.phone === this.info.originInfoList.phone))) {
                     //查询手机是否被占用
-                    this.axios.get(this.$store.state.url + "/personal/ackphone",
+                    this.axios.get(this.$store.state.url + "managemodule/user/checkPhone",
                         { params: { phone: this.info.infoList.phone } }).then(res => {
-                            if (res.data.code == 1) {
-                                this.phoneAck.tip = res.data.msg;
+                            if (!res.data.state) {
+                                this.phoneAck.tip = res.data.msg + '！';
                                 this.phoneAck.flag = true;
                                 this.ackAllFlag = false;
                             }
@@ -316,72 +349,38 @@
                 }
 
             },
-            ackEmail() {
-                this.subAck.flag = false;
-                var reg = /^[a-zA-Z0-9_.-]+@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*\.[a-zA-Z0-9]{2,6}$/;
-                if (!this.info.infoList.email) {
-                    this.emailAck.tip = '邮箱不能为空！';
-                    this.emailAck.flag = true;
-                    this.ackAllFlag = false;
-                } else if (reg.test(this.info.infoList.email)) {
-                    //    this.emailAck.tip='邮箱格式正确！';
-                    this.emailAck.flag = false;
-                    this.ackAllFlag = true;
-                } else {
-                    this.emailAck.tip = '请输入正确的邮箱格式！';
-                    this.emailAck.flag = true;
-                    this.ackAllFlag = true;
-                }
-                if (!this.emailAck.flag && (!(this.info.infoList.email === this.info.originInfoList.email))) {
-                    //查询邮箱是否被占用
-                    this.axios.get(this.$store.state.url + "/personal/ackemail",
-                        { params: { email: this.info.infoList.email } }).then(res => {
-                            if (res.data.code == 1) {
-                                this.emailAck.tip = res.data.msg;
-                                this.emailAck.flag = true;
-                                this.ackAllFlag = false;
-                            }
-                        })
-                }
-            },
-            ackProfile() {
-                this.subAck.flag = false;
-                //  console.log(this.info.infoList.profile)
-                var len = this.info.infoList.profile == null ? 0 : this.info.infoList.profile.length;
-                if (len > 200) {
-                    this.profileAck.tip = '个人简历字数请保持在200以内哦！';
-                    this.profileAck.flag = true;
-                    this.ackAllFlag = false;
-                }
-            },
-
             submitInfo() {
                 if (this.ackAllFlag) {
                     this.axios({
                         method: 'post',
-                        url: this.$store.state.url + "/personal/submitInfo",
+                        url: this.$store.state.url + "managemodule/user/updateUser",
                         data: {
-                            uid: this.$store.state.userMsg.uid,
-                            uname: this.info.infoList.uname,
+                            name: this.info.infoList.name,
                             phone: this.info.infoList.phone,
-                            sex: this.info.infoList.sex,
-                            email: this.info.infoList.email,
-                            profile: this.info.infoList.profile
+                            imgUrl: this.info.infoList.imgUrl,
+                            id:this.info.infoList.id
                         }
                     }).then(res => {
-                        if (res.data.code === 1) {
+                        console.log(res.data.state)
+                        if (res.data.state) {
                             this.subAck.flag = true;
                             this.subAck.tip = res.data.msg;
-                            var obj = { user: this.info.infoList.uname, uid: this.$store.state.userMsg.uid }
-                            this.$store.commit("signin", obj);
+                            if (this.info.infoList.phone == this.info.originInfoList.phone) {
+                                // this.$router.push('/'); 
+                                this.getInfo();
+                            } else {
+                                this.$store.commit("signout");
+                                this.$router.push('/');
+                            }
+
                         } else {
                             this.subAck.flag = true;
                             this.subAck.tip = res.data.msg;
                         }
+                        console.log(res)
                     })
                 }
             },
-
             //修改密码
             ackUpwd() {
                 console.log(this.newPwd)
@@ -433,4 +432,30 @@
 </script>
 <style>
     @import '../assets/css/personal.css';
+    .avatar-uploader .el-upload {
+        border: 1px dashed #d9d9d9;
+        border-radius: 6px;
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .avatar-uploader .el-upload:hover {
+        border-color: #409EFF;
+    }
+
+    .avatar-uploader-icon {
+        font-size: 28px;
+        color: #8c939d;
+        width: 178px;
+        height: 178px;
+        line-height: 178px;
+        text-align: center;
+    }
+
+    .avatar {
+        width: 178px;
+        height: 178px;
+        display: block;
+    }
 </style>

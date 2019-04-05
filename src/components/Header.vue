@@ -12,7 +12,7 @@
               </div>
               <!--logo-->
               <a href="/">
-                  <img id="brand" :src="this.$store.state.imgUrl+'/img/logo/lemon_logo_black.png'">
+                  <img id="brand" :src="this.$store.state.url+'systemImg/'+'lemon_logo_black.png'">
               </a>
               <!--个人中心-->
               <div v-if="this.$store.state.islogin" class="col col-md-auto order-md-4 position-relative iconfont icon-login1_1 text-right p-md-0 personal" data-trigger="toggle">
@@ -43,7 +43,7 @@
                           <li><router-link class="iconfont icon-shouyefill" to="/index" data-target="item"></router-link></li>
                           <li><router-link to="/movies" data-target="item">电影</router-link></li>
                           <li><router-link to="/order" data-target="item">排行榜</router-link></li>
-                          <li><router-link to="/tickets" data-target="item">购票</router-link></li>
+                          <!-- <li><router-link to="/tickets" data-target="item">购票</router-link></li> -->
                           <li><router-link to="/comments"  data-target="item">影评</router-link></li>
                           <li><router-link class="iconfont icon-some" to="/" data-target="item"></router-link></li>
                       </ul>

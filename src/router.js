@@ -8,7 +8,6 @@ import Order from './views/Order.vue'
 import Tickets from './views/Tickets.vue'
 import Comments from './views/Comments.vue'
 
-
 import Personal from './views/Personal.vue'
 
 import NotFound from './views/NotFound.vue'
@@ -18,8 +17,7 @@ import Register_Login from './views/Register_Login.vue'
 import Add_travel from './views/Add_travel.vue'
 import Travel_detail from './views/Travel_detail.vue'
 
-
-import Strategy_details from './views/Strategy_details.vue'
+import Movie_details from './views/Movie_details.vue'
 
 Vue.use(Router);
 
@@ -34,7 +32,7 @@ export default new Router({
       {path: '/order', component: Order},
       {path: '/travel_detail', component: Travel_detail},
       {path: '/comments', component: Comments},
-      {path: '/strategy_details', component: Strategy_details},
+      {path: '/movie_details', component: Movie_details},
       {path: '/add_travel', component: Add_travel}
     ]},
     {path:'/login_register',component:Register_Login},

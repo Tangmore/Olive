@@ -29,46 +29,27 @@
             <div class="row mt-5 pt-4">
                 <div class=" col-sm-12 col-md-9">
                     <!-- 热门电影 -->
-                    <div class="popMovie">
-                        <div class="row">
-                            <div class="text-left pb-4">
-                                <span class="pop_title">热门电影</span>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-lg-2 col-md-2 col-sm-3 col-3  mb-2" v-for="item in  guide.imgList">
-                                <div class="">
-                                    <img src="http://127.0.0.1:83/img/movieImg/love/mo6.jpg" alt="" class="w-100" @click="$router.push('/strategy_details?pid='+item.pid)">
-                                    <p>
-                                        比悲伤更悲伤的故事
-                                        <strong style="color: #e09015">8.2</strong>
-                                    </p>
+                    <div class="row">
+                        <div class="movie-item col-lg-3 col-md-3 col-sm-3 col-3  mb-2" v-for="item in popMovieList.imgList">
+                            <a @click="$router.push('/movie_details?id='+item.id)" target="_blank">
+                                <div class="movie-poster position-relative">
+                                    <img :src="item.imgUrl" class="w-100">
+                                    <div class="movie-overlay">
+                                        <div class="movie-info">
+                                            <div class="movie-score">
+                                                <i>{{item.praise}}</i>
+                                            </div>
+                                            <div class="movie-title movie-title-padding" :title="item.movieName">{{item.movieName}}</div>
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
-                        </div>
-                        <div class="btn btn-light p-2 bordered w-100 mt-2">
-                            <router-link class="text-center" to="/movies"> 查看全部电影&gt;</router-link>
-                        </div>
-                    </div>
-                    <!-- 热门推荐 -->
-                    <div class="popRecommend">
-                        <div class="row">
-                            <div class="text-left pb-4">
-                                <span class="pop_title">热门推荐</span>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-lg-3 col-md-3 col-sm-4 col-4  mb-2" v-for="item in  guide.imgList">
-                                <div class="">
-                                    <img src="http://127.0.0.1:83/img/movieImg/love/mo6.jpg" alt="" class="w-100" @click="$router.push('/strategy_details?pid='+item.pid)">
-                                    <p>
-                                        比悲伤更悲伤的故事
-                                        <strong style="color: #e09015">8.2</strong>
-                                    </p>
-                                </div>
+                            </a>
+                            <div class="movie-sale">
+                                <a @click="$router.push('/tickets?id='+item.id)" class="active" target="_blank" data-act="salePlayingMovie-click" data-val="{movieid:345875}">购 票</a>
                             </div>
                         </div>
                     </div>
+
                     <!-- 热门评论 -->
                     <div class="popComment">
                         <div class="row">
@@ -77,16 +58,15 @@
                             </div>
                         </div>
                         <!-- <div class="col-4  mb-2">
-                                    <img src="http://127.0.0.1:83/img/movieImg/love/mo6.jpg" alt="" class="w-100" @click="$router.push('/strategy_details?pid='+item.pid)">
+                                    <img src="http://127.0.0.1:83movieImg/love/mo6.jpg" alt="" class="w-100" @click="$router.push('/strategy_details?pid='+item.pid)">
                                 </div>
                                 <span class="col-8  mb-2">
                                     wwwwww
                                 </span> -->
                         <div id="comments" class="pt-4 pl-2 pr-2 container">
-                            <div class="row ml-0 mr-0 mb-3  position-relative" 
-                              @click="jumpToDetail(item.tid,$event)">
+                            <div class="row ml-0 mr-0 mb-3  position-relative" @click="jumpToDetail(item.tid,$event)">
                                 <div class="col-3">
-                                    <img class="img-fluid p-0 w-60" src="http://127.0.0.1:83/img/movieImg/love/mo6.jpg">
+                                    <img class="img-fluid p-0 w-60" src="http://127.0.0.1:83movieImg/love/mo6.jpg">
                                 </div>
                                 <div class="col-9">
                                     <div class="one-row ">
@@ -183,37 +163,40 @@
     export default {
         data() {
             return {
-                imgUrl: this.$store.state.url + "/img/background/loading.gif",
+                // imgUrl: this.$store.state.url + "background/loading.gif",
                 carousel: {
                     carouselList: [
                         {
-                            'md_url': this.$store.state.imgUrl + '/img/carousel/500_250_bg1.jpg', 'lg_url': this.$store.state.imgUrl + '/img/carousel/1920_520_bg1.jpg',
-                            'sm_url': this.$store.state.imgUrl + '/img/carousel/40_40_bg1.jpg'
+                            'md_url': this.$store.state.url + 'systemImg/' + '500_250_bg1.jpg', 'lg_url': this.$store.state.url + 'systemImg/' + '1920_520_bg1.jpg',
+                            'sm_url': this.$store.state.url + 'systemImg/' + '40_40_bg1.jpg'
                         },
                         {
-                            'md_url': this.$store.state.imgUrl + '/img/carousel/500_250_bg2.jpg', 'lg_url': this.$store.state.imgUrl + '/img/carousel/1920_520_bg2.jpg',
-                            'sm_url': this.$store.state.imgUrl + '/img/carousel/40_40_bg2.jpg'
+                            'md_url': this.$store.state.url + 'systemImg/' + '500_250_bg2.jpg', 'lg_url': this.$store.state.url + 'systemImg/' + '1920_520_bg2.jpg',
+                            'sm_url': this.$store.state.url + 'systemImg/' + '40_40_bg2.jpg'
                         },
                         {
-                            'md_url': this.$store.state.imgUrl + '/img/carousel/500_250_bg3.jpg', 'lg_url': this.$store.state.imgUrl + '/img/carousel/1920_520_bg3.jpg',
-                            'sm_url': this.$store.state.imgUrl + '/img/carousel/40_40_bg3.jpg'
+                            'md_url': this.$store.state.url + 'systemImg/' + '500_250_bg3.jpg', 'lg_url': this.$store.state.url + 'systemImg/' + '1920_520_bg3.jpg',
+                            'sm_url': this.$store.state.url + 'systemImg/' + '40_40_bg3.jpg'
                         },
                         {
-                            'md_url': this.$store.state.imgUrl + '/img/carousel/500_250_bg4.jpg', 'lg_url': this.$store.state.imgUrl + '/img/carousel/1920_520_bg4.jpg',
-                            'sm_url': this.$store.state.imgUrl + '/img/carousel/40_40_bg4.jpg'
+                            'md_url': this.$store.state.url + 'systemImg/' + '500_250_bg4.jpg', 'lg_url': this.$store.state.url + 'systemImg/' + '1920_520_bg4.jpg',
+                            'sm_url': this.$store.state.url + 'systemImg/' + '40_40_bg4.jpg'
                         },
                         {
-                            'md_url': this.$store.state.imgUrl + '/img/carousel/500_250_bg5.jpg', 'lg_url': this.$store.state.imgUrl + '/img/carousel/1920_520_bg5.jpg',
-                            'sm_url': this.$store.state.imgUrl + '/img/carousel/40_40_bg5.jpg'
+                            'md_url': this.$store.state.url + 'systemImg/' + '500_250_bg5.jpg', 'lg_url': this.$store.state.url + 'systemImg/' + '1920_520_bg5.jpg',
+                            'sm_url': this.$store.state.url + 'systemImg/' + '40_40_bg5.jpg'
                         }],
                     timer: null,
                     ind: 0
                 },
                 // 评分
                 rate: 3,
-
-                guide: {
-                    imgList: ['', '', '', '', '', '', '', '', '', '', '', '']
+                popMovieList: {
+                    imgList: [],
+                    pageSize: 12,
+                    currentPage: 1,
+                    total: 0,
+                    currentPageData: []
                 },
                 loginAlert: false,
                 loginAlertMsg: "请先登录 !",
@@ -239,14 +222,45 @@
                     this.carousel.carouselList = res.data;
                 })
             },
-            changeActiveIndex(i){
-            this.activeIndex = 1;
-        },
+            changeActiveIndex(i) {
+                this.activeIndex = 1;
+            },
+            initMovieList() {
+                var url = this.$store.state.url
+                    + 'managemodule/movie/selectPageAdmin';
+                this.axios({
+                    method: 'GET',
+                    url: url,
+                    params: { pageSize: this.pageSize, currentPage: this.currentPage }
+                })
+                    .then(res => {
+                        console.log(res);
+                        if (res.status == 200) {
+                            if (res.data.rows) {
+                                this.total = res.data.total;
+                                for (var item of res.data.rows) {
+                                    item.imgUrl = this.$store.state.url + item.imgUrl;
+                                    // console.log(item.imgUrl)
+                                }
+                                this.popMovieList.imgList = res.data.rows;
+                                console.log(this.popMovieList.imgList);
+                            } else {
+                                this.$message.error(res.data.msg);
+                            }
+                        }
+                    })
+                    .catch(err => {
+                        console.log(err);
+                    })
+            }
         },
         created() {
             this.loadCarousel();
             this.carouselTask();
 
+        },
+        mounted() {
+            this.initMovieList();
         },
         computed: {
             ...mapState(['userMsg'])
@@ -254,6 +268,44 @@
 
     }
 </script>
-<style>
+<style scoped>
     @import '../assets/css/index.css';
+    .movie-info {
+        color: #fff;
+        position: absolute;
+        bottom: 7px;
+        width: 100%;
+    }
+
+    .movie-score {
+        color: #ffb400;
+        float: right;
+        margin-right: 10px;
+    }
+
+    .movie-title {
+        font-size: 16px;
+        width: 80%;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        line-height: 22px;
+        margin: 0 10px;
+    }
+
+    .movie-sale {
+        height: 39px;
+        line-height: 39px;
+    }
+
+    .movie-sale a {
+        display: block;
+        border: 1px solid #ccc;
+        text-align: center;
+    }
+    .movie-sale a:hover{
+        background: #f00;
+        color: #fff;
+        border: none;
+    }
 </style>

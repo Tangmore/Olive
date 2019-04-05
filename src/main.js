@@ -9,8 +9,11 @@ import './assets/css/bootstrap.css'
 import './assets/css/base.css'
 // import './assets/css/iconfont.css'
 require("heyui/themes/index.less")
+import ElementUI from 'element-ui'
+import 'element-ui/lib/theme-chalk/index.css'
 import HeyUI from 'heyui'
 Vue.use(HeyUI);
+Vue.use(ElementUI)  //注册ElementUI
 
 axios.defaults.withCredentials = true;
 // axios.defaults.baseURL = '';

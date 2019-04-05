@@ -1,0 +1,69 @@
+.banner{
+  background-color:  #392f59;
+ }
+ .banner .wrapper {
+  height: 376px;
+  min-width: 820px;
+  position: relative;
+}
+.avatar{
+  border: 4px solid #fff;
+}
+ .banner .wrapper .celeInfo {
+  position: relative;
+  top: 30px;
+  overflow: hidden;
+  z-index: 9;
+}
+.movie-brief-container {
+  color: #fff;
+  font-size: 14px;
+}
+.movie-brief-container .name {
+  font-size: 26px;
+  line-height: 32px;
+  font-weight: 700;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  max-height: 64px;
+}
+.comment,.wanted{
+  margin-top: 10px;
+  width: 120px;
+  height: 40px;
+  font-size: 16px;
+  line-height: 40px;
+  text-align: center;
+  border-radius: 2px;
+  padding: 0;
+  background: #756189;
+  color: #fff;
+  margin-right: 10px;
+}
+.buy{
+  margin-top: 10px;
+  width: 250px;
+  height: 40px;
+  font-size: 16px;
+  line-height: 40px;
+  text-align: center;
+  border-radius: 2px;
+  padding: 0;
+  background: #f00;
+  color: #fff;
+
+}
+.movie-praise{
+  color: #fff;
+}
+.movie-praise .praise{
+  font-size: 30px;
+  color: #ffc600;
+  height: 30px;
+  line-height: 30px;
+}
+.tab-title{
+  font-size: 18px;
+  font-weight: bold;
+}

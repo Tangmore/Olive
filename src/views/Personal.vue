@@ -15,11 +15,8 @@
             </div>
             <div class="col-sm-9" v-show='staticSty.ind==0'>
                 <div class="profile ">
-
                     <p>
                         <span class="title pr-4">我的信息</span>
-                        <!-- <span>资料完善度</span>
-                        <b>{{comProgress}}%</b> -->
                     </p>
                     <form class="form-group">
                         <div class="unameDiv">
@@ -68,9 +65,18 @@
 
             <div class="col-sm-9" v-show='staticSty.ind==1'>
                 <div class="profile ">
-                    <form class="form-group">
-                        我的评论列表
-                    </form>
+                    <div v-if='commentsTotal>0'>我的评论</div>
+                        <div v-if="commentsTotal==0">
+                                <p class="p-2 text-muted text-center floor">
+                                    这人很懒，还没有人评论哦！！
+                                </p>
+                            </div>
+                      <!-- 评论分页 -->
+            <div class="text-right" :class="commentsTotal==0?'d-none':''">
+                    <el-pagination background @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage"
+                        :page-sizes="[6, 8, 10, 20]" :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper" :total="total">
+                    </el-pagination>
+                </div>
                 </div>
             </div>
 
@@ -86,6 +92,13 @@
             <div class="col-sm-9" v-show='staticSty.ind==3'>
                 <div class="profile ">
                     <form class="form-group">
+                            <div class="row m-2 mt-2">
+                                    <label for='password' class="col-2 control-label p-0 col-2">原密码：</label>
+                                    <div class="col-6 col-10">
+                                        <input type="password" class="form-control" id="password"  v-model='originalPwd'>
+                                        <!-- <p class="tips" v-show='upwdAck.flag'>{{upwdAck.tip}}</p> -->
+                                    </div>
+                                </div>
                         <div class="row m-2 mt-2">
                             <label for='password' class="col-2 control-label p-0 col-2">新密码：</label>
                             <div class="col-6 col-10">
@@ -146,6 +159,8 @@
                 subAck: { tip: '', flag: false },
                 upwdAck: { tip: '', flag: false },
                 upwdAgainAck: { tip: '', flag: false },
+                originalPwd:'',
+
                 pwdSubAck: {
                     tip: '', flag: false
                 },
@@ -154,9 +169,18 @@
                 newPwd: '',
                 againPwd: '',
                 pwdAckAllFlag: false,  ////当为true时才可提交密码
-                myTravelList: [],
                 imageUrl: '',
                 uploadAction: this.$store.state.url + 'filemodule/file/uploadFile',
+
+                // 我的评论
+                 currentPageData: [],
+                // 每页显示条数
+                pageSize: 6,
+                // 当前页
+                currentPage: 1,
+                // 总条数
+                total: 0,
+                commentsTotal:0
             }
         },
         created() {
@@ -164,18 +188,7 @@
         },
         mounted() {
             this.getInfo();
-        },
-        computed: {
-            comProgress: function () {
-                var i = 0, j = 0;
-                for (var item in this.info.infoList) {
-                    i++;
-                    if (this.info.infoList[item] !== '') {
-                        j++;
-                    }
-                }
-                return Math.floor(((j - 2) / i) * 100);
-            }
+            this.getMyComments(this.pageSize,this.currentPage);
         },
         methods: {
             // 验证上传图片的格式
@@ -209,15 +222,7 @@
                 this.info.infoList.imgUrl = res.row;
                 this.imageUrl = this.$store.state.url + res.row;
             },
-            myTravel() {
-                this.staticSty.ifShow = this.staticSty.ifShow ? false : true;
-                this.staticSty.ind = 0;
-                this.axios.get(this.$store.state.url + "/personal/getOwntravel",
-                    { params: { uid: this.$store.state.userMsg.uid } }).then(res => {
-                        this.myTravelList = res.data;
-                        // console.log(res)
-                    })
-            },
+          
             tabChange(index) {
                 this.staticSty.ind = index;
                 this.staticSty.ifShow = false;
@@ -253,30 +258,49 @@
                 }).catch(err => {
                     console.log(err);
                 })
-
             },
-
-            //  ackEvent(reg,cur,obj,text){
-            //           if(!cur){
-            //              obj.tip=text[0];         
-            //              obj.flag=true;
-            //              this.ackAllFlag=false; 
-            //            }else if(reg.test(cur)){
-            //              obj.tip=text[1];
-            //              obj.flag=true;
-            //              this.ackAllFlag=true; 
-            //           }else{
-            //              obj.tip=text[2];
-            //              obj.flag=true;
-            //              this.ackAllFlag=true;
-            //           }
-            //      },
-            //      ackUname(){
-            //         var text=['昵称不能为空！','昵称可用！','昵称为4到16位（字母，数字，下划线，减号）！'];
-            //         this.ackEvent(/^[a-zA-Z0-9_-]{4,16}$/,this.info.infoList.uname,
-            //            this.unameAck,text);  
-            //      }, this.unameAck.tip,this.unameAck.flag,text[0],text[1],text[2]);  
-            //      },
+            //我的评论
+            getMyComments(pageSize, currentPage) {
+                var url=this.$store.state.url + "managemodule/comment/selectPageByUserId";
+                this.axios({
+                    method:'GET',
+                    url,
+                    params: { pageSize: pageSize, currentPage: currentPage },
+                    headers:{'TLUSER':sessionStorage.getItem('token')}})
+                    .then(res => {
+                        console.log(res);
+                        if (res.status == 200) {
+                            if (res.data.rows) {
+                                this.total = res.data.total;
+                                // for (var item of res.data.rows) {
+                                //     // item.imgUrl = this.$store.state.url + item.imgUrl;
+                                //     // console.log(item.imgUrl)
+                                // }
+                                this.currentPageData = res.data.rows;
+                                this.commentsTotal = this.currentPageData.length;
+                            } else {
+                                this.commentsTotal = 0;
+                            }
+                        }
+                    })
+                    .catch(err => {
+                        console.log(err);
+                    })
+            },
+            handleSizeChange(val) {
+                this.currentPageData = [];
+                this.page = 0;
+                this.total = 0;
+                console.log(`每页 ${val} 条`);
+                this.pageSize = val;
+                this.getComments(val, this.currentPage);
+            },
+            handleCurrentChange(val) {
+                this.currentPageData = []
+                console.log(`当前页: ${val}`);
+                this.currentPage = val;
+                this.getComments(this.pageSize, val);
+            },
             ackUname() {
                 this.subAck.flag = false;
                 var reg = /^[a-zA-Z0-9_-]{2,16}$/;
@@ -297,17 +321,6 @@
                     //查询昵称是否被占用
                     this.axios.get(this.$store.state.url + "managemodule/user/checkName",
                         { params: { name: this.info.infoList.name } }).then(res => {
-                            // if (res.data.code == 1) {
-                            //     this.unameAck.tip = res.data.msg;
-                            //     this.unameAck.flag = true;
-                            //     this.ackAllFlag = false;
-                            // }
-                            // if (res.data.code == -1) {
-                            //     this.unameAck.tip = '';
-                            //     this.unameAck.flag = false;
-                            //     this.ackAllFlag = true;
-                            // }
-                            console.log(res);
                             if (!res.data.state) {
                                 this.unameAck.tip = res.data.msg+'!';
                                 this.unameAck.flag = true;
@@ -405,21 +418,21 @@
                 }
             },
             modifyPwd() {
-                console.log(this.newPwd)
                 if (this.pwdAckAllFlag) {
                     this.axios({
-                        method: 'post',
-                        url: this.$store.state.url + "/personal/modifyPwd",
+                        method: 'POST',
+                        url: this.$store.state.url + "managemodule/user/updatePassWordUser",
                         data: {
-                            uid: this.$store.state.userMsg.uid,
-                            upwd: this.newPwd,
-                        }
+                            originalPassword:this.originalPwd,
+                            currentPassword: this.newPwd
+                        },
+                        headers:{'TLUSER':sessionStorage.getItem('token')}
                     }).then(res => {
-                        if (res.data.code === 1) {
+                        if(res.data.state){
                             this.pwdSubAck.flag = true;
                             this.pwdSubAck.tip = res.data.msg;
-                            this.$router.push('/index');
-                        } else {
+                            this.$router.push('/login_register');
+                        }else{
                             this.pwdSubAck.flag = true;
                             this.pwdSubAck.tip = res.data.msg;
                         }

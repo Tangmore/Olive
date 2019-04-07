@@ -30,6 +30,11 @@
                 <div class=" col-sm-12 col-md-9">
                     <!-- 热门电影 -->
                     <div class="row">
+                            <div class="text-left pb-4">
+                                <span class="pop_title pl-2" style="border-left:4px solid #ffb400">热门电影</span>
+                            </div>
+                        </div>
+                    <div class="row">
                         <div class="movie-item col-lg-3 col-md-3 col-sm-3 col-3  mb-2" v-for="item in popMovieList.imgList">
                             <a @click="$router.push('/movie_details?id='+item.id)" target="_blank">
                                 <div class="movie-poster position-relative">
@@ -42,27 +47,25 @@
                                             <div class="movie-title movie-title-padding" :title="item.movieName">{{item.movieName}}</div>
                                         </div>
                                     </div>
-                                </div>
+                                </div> 
                             </a>
                             <div class="movie-sale">
                                 <a @click="$router.push('/tickets?id='+item.id)" class="active" target="_blank" data-act="salePlayingMovie-click" data-val="{movieid:345875}">购 票</a>
                             </div>
                         </div>
+                        <div class="btn btn-light p-2 bordered w-100 mt-5 mb-4">
+                                <router-link class="text-center" to="/movies"> 查看更多&gt;</router-link>
+                            </div>
                     </div>
 
                     <!-- 热门评论 -->
                     <div class="popComment">
                         <div class="row">
                             <div class="text-left pb-4">
-                                <span class="pop_title">热门影评</span>
+                                <span class="pop_title pl-2" style="border-left:4px solid #ffb400">热门影评</span>
                             </div>
                         </div>
-                        <!-- <div class="col-4  mb-2">
-                                    <img src="http://127.0.0.1:83movieImg/love/mo6.jpg" alt="" class="w-100" @click="$router.push('/strategy_details?pid='+item.pid)">
-                                </div>
-                                <span class="col-8  mb-2">
-                                    wwwwww
-                                </span> -->
+               
                         <div id="comments" class="pt-4 pl-2 pr-2 container">
                             <div class="row ml-0 mr-0 mb-3  position-relative" @click="jumpToDetail(item.tid,$event)">
                                 <div class="col-3">
@@ -72,23 +75,20 @@
                                     <div class="one-row ">
                                         <div class="row text-muted m-0">
                                             <div class="col text-left p-0">
-                                                <p>相伤害”——步履不停的思考生命的本质 </p>
                                                 <p class="">
                                                     <span>云淡风轻</span>
                                                     评论
                                                     <span>《步履不停》</span>
                                                 </p>
-                                                <Rate v-model="rate"></Rate>
                                                 <p class="content">
-                                                    “所谓主角，是指即便没有出现在画面上，但仍然支配着整部电影的人。但到 底支配着什么呢？就是台词动作、情感，有时还包括剪辑。总而言之， 电影主角就是与镜头这一侧的导演呼吸频率同步的人。”...
+                                                    “所谓主角，是指即便没有出现在画面上，但仍然支配着整部电影的人。但到 底支配着什么呢？
+                                                    就是台词动作、情感，有时还包括剪辑。总而言之， 电影主角就是与镜头这一侧的导
+                                                    演呼吸频率同步的人。”...
                                                 </p>
                                             </div>
                                         </div>
                                         <div class="position-absolute" style="bottom: 10px;right: 10px">
                                             <div class="text-right">
-
-                                                <!-- <span class="iconfont icon-browse">&nbsp;</span>
-                                                <span>浏览数</span> -->
                                                 <span class="iconfont icon-love" style="color: #fcc">&nbsp;</span>
                                                 <span>点赞数</span>
                                             </div>
@@ -98,53 +98,17 @@
                             </div>
                         </div>
                         <div class="btn btn-light p-2 bordered w-100 mt-5">
-                            <router-link class="text-center" to="/comments"> 查看全部影评&gt;</router-link>
+                            <router-link class="text-center" to="/comments"> 查看更多&gt;</router-link>
                         </div>
                     </div>
                 </div>
                 <div class="col-md-3  orderWeekBox">
-                    <p class="mb-4"> 一周口碑榜</p>
+                    <p class="mb-4" style="color: #ffb400;font-size: 18px"> 热映Top10</p>
                     <div class="orderByWeek">
                         <table class="w-100">
-                            <tr>
-                                <td>1</td>
-                                <td>111</td>
-                            </tr>
-                            <tr>
-                                <td>2</td>
-                                <td>222</td>
-                            </tr>
-                            <tr>
-                                <td>3</td>
-                                <td>333</td>
-                            </tr>
-                            <tr>
-                                <td>4</td>
-                                <td>444</td>
-                            </tr>
-                            <tr>
-                                <td>5</td>
-                                <td>555</td>
-                            </tr>
-                            <tr>
-                                <td>6</td>
-                                <td>666</td>
-                            </tr>
-                            <tr>
-                                <td>7</td>
-                                <td>777</td>
-                            </tr>
-                            <tr>
-                                <td>8</td>
-                                <td>888</td>
-                            </tr>
-                            <tr>
-                                <td>9</td>
-                                <td>999</td>
-                            </tr>
-                            <tr>
-                                <td>10</td>
-                                <td>100</td>
+                            <tr v-for='(item,index) in top10MovieArr'>
+                                <td style="color: #ffb400">{{index+1}}</td>
+                                <td>{{item.movieName}}</td>
                             </tr>
                         </table>
                     </div>
@@ -152,18 +116,12 @@
             </div>
         </div>
         </div>
-
-        <Toast v-if="loginAlert" :toastMsg="loginAlertMsg" :toastClass="loginAlertBgColor"></Toast>
     </section>
 </template>
-
 <script>
-    import { mapState } from 'vuex'
-    import Toast from "@/components/toast.vue"
     export default {
         data() {
             return {
-                // imgUrl: this.$store.state.url + "background/loading.gif",
                 carousel: {
                     carouselList: [
                         {
@@ -200,12 +158,12 @@
                 },
                 loginAlert: false,
                 loginAlertMsg: "请先登录 !",
-                loginAlertBgColor: "bg-dark position-fixed"
+                loginAlertBgColor: "bg-dark position-fixed",
+
+                top10MovieArr:[]
             }
         },
-        components: {
-            Toast
-        },
+   
         methods: {
             carouselTask() {
                 this.carousel.timer = setInterval(() => {
@@ -215,26 +173,21 @@
                     }
                 }, 4000)
             },
-            loadCarousel() {
-                this.axios.get(this.$store.state.url + '/index/carousel', {
-                    params: { num1: 1, num2: 4, num3: 8, num4: 17, num5: 18 }
-                }).then(res => {
-                    this.carousel.carouselList = res.data;
-                })
-            },
+            
             changeActiveIndex(i) {
                 this.activeIndex = 1;
             },
+            //获取电影列表
             initMovieList() {
                 var url = this.$store.state.url
-                    + 'managemodule/movie/selectPageAdmin';
+                    + 'managemodule/movie/selectPageMovie';
                 this.axios({
                     method: 'GET',
                     url: url,
                     params: { pageSize: this.pageSize, currentPage: this.currentPage }
                 })
                     .then(res => {
-                        console.log(res);
+                        // console.log(res);
                         if (res.status == 200) {
                             if (res.data.rows) {
                                 this.total = res.data.total;
@@ -243,7 +196,7 @@
                                     // console.log(item.imgUrl)
                                 }
                                 this.popMovieList.imgList = res.data.rows;
-                                console.log(this.popMovieList.imgList);
+                                // console.log(this.popMovieList.imgList);
                             } else {
                                 this.$message.error(res.data.msg);
                             }
@@ -252,20 +205,28 @@
                     .catch(err => {
                         console.log(err);
                     })
-            }
+            },
+             //获取排行数据
+             initNextTen() {
+                this.axios.get(this.$store.state.url + 'managemodule/movie/selectTop5ImgUrl').then(res => {
+                    if (res.status == 200) {
+                        // console.log(res)
+                        for(var item of res.data.rows){
+                            item.imgUrl=this.$store.state.url+item.imgUrl;
+                        }
+                        this.top10MovieArr=res.data.rows;
+                    }
+                })
+            },
         },
         created() {
-            this.loadCarousel();
             this.carouselTask();
 
         },
         mounted() {
             this.initMovieList();
-        },
-        computed: {
-            ...mapState(['userMsg'])
-        },
-
+            this.initNextTen();
+        }
     }
 </script>
 <style scoped>

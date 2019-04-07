@@ -18,6 +18,8 @@ import Add_travel from './views/Add_travel.vue'
 import Travel_detail from './views/Travel_detail.vue'
 
 import Movie_details from './views/Movie_details.vue'
+import Cinema from './views/Cinema.vue'
+import Seat from './views/Seat.vue'
 
 Vue.use(Router);
 
@@ -33,7 +35,9 @@ export default new Router({
       {path: '/travel_detail', component: Travel_detail},
       {path: '/comments', component: Comments},
       {path: '/movie_details', component: Movie_details},
-      {path: '/add_travel', component: Add_travel}
+      {path: '/add_travel', component: Add_travel},
+      {path: '/cinema', component: Cinema},
+      {path: '/seat', component: Seat},
     ]},
     {path:'/login_register',component:Register_Login},
     {path: '**', component: NotFound}

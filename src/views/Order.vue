@@ -7,7 +7,8 @@
             <p>榜单规则：将热映的影片，按照评分从高到低排列取前10名，每天更新。相关数据来源于“Olive”。</p>
         </div>
         <div id="top10" class="pt-4 pl-2 pr-2 container">
-            <div class="row ml-0 mr-0 mb-3  position-relative" @click="jumpToDetail(item.id,$event)" v-for='(item,index) in top10MovieArr'>
+            <div class="row ml-0 mr-0 mb-3  position-relative" @click="jumpToDetail(item.id,$event)"
+             v-for='(item,index) in top10MovieArr'>
                 <div class="col-1 d-flex flex-column justify-content-center moviename" >{{index+1}}</div>
                 <div class="col-2">
                     <img class="img-fluid p-0 w-60" :src="item.imgUrl">
@@ -36,21 +37,14 @@
     export default {
         data() {
             return {
-                date: '',
+                date:new Date().toLocaleDateString().split('/').join('-'),
                 rate:'',
                 top10MovieArr:[]
             }
         },
         methods: {
-            getNewDate(){
-                var date=new Date();
-                let year=date.getFullYear();
-                let month=date.getMonth();
-                let day=date.getDate();
-                this.date=year+'-'+month+'-'+day;
-            },
             //获取排行数据
-            initNextFive() {
+            initNextTen() {
                 this.axios.get(this.$store.state.url + 'managemodule/movie/selectTop5ImgUrl').then(res => {
                     if (res.status == 200) {
                         console.log(res)
@@ -67,8 +61,7 @@
             }
         },
         mounted(){
-            this.getNewDate();
-            this.initNextFive();
+            this.initNextTen();
 
         }
     }

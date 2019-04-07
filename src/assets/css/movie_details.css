@@ -67,3 +67,26 @@
   font-size: 18px;
   font-weight: bold;
 }
+
+/* 评论 */
+.userAvatar{
+  width: 36px;
+  height: 36px;
+  /* border: 1px solid #000; */
+  border-radius: 50%;
+}
+.public-comment-btn{
+  border: 1px solid #f00;
+  display: block;
+  font-size:14px; 
+  text-align: center;
+  letter-spacing: 6px;
+}
+.public-btn{
+  background: #f00;
+  color: #fff;
+  font-size: 14px;
+}
+.zan{
+  color: #f00;
+}

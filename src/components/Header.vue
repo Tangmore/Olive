@@ -15,11 +15,12 @@
                   <img id="brand" :src="this.$store.state.url+'systemImg/'+'lemon_logo_black.png'">
               </a>
               <!--个人中心-->
-              <div v-if="this.$store.state.islogin" class="col col-md-auto order-md-4 position-relative iconfont icon-login1_1 text-right p-md-0 personal" data-trigger="toggle">
+              <div v-if="isLogin" class="col col-md-auto order-md-4 position-relative iconfont  text-right p-md-0 personal" :class="avatar?'':'icon-login1_1'" data-trigger="toggle">
+                 <img v-if='avatar' :src="avatar" alt="" style="border-radius: 100%;">
                   <div class="position-absolute flex-column pr-3 p-md-0 d-none" data-target="toggleItem">
                       <div class="align-self-end mr-2"></div>
                       <ul class="pl-3 pr-3 speed">
-                          <li class="text-left border-bottom" v-cloak>{{this.$store.state.userMsg?this.$store.state.userMsg.user:''}}</li>
+                           <li class="text-left border-bottom" v-cloak>{{this.$store.state.userMsg?this.$store.state.userMsg.user:''}}</li>
                           <li class="text-left border-bottom"><router-link to="/personal" class="iconfont icon-touxiang">&nbsp;个人中心</router-link> </li>
                           <!-- <li class="text-left border-bottom"><router-link to="/add_travel" class="iconfont icon-fabiaoyouji">&nbsp;发表游记</router-link></li> -->
                           <li class="text-left border-bottom"><a  class="iconfont icon-tuichu" @click="signout">&nbsp;退出</a></li>
@@ -67,21 +68,45 @@
             return {
                 activeTab:"index",
                message:"header的生命周期：",
-               searchText2: null
+               searchText2: null,
+
+               isLogin:sessionStorage.getItem('token')?sessionStorage.getItem('token'):'',
+               avatar:''
             }
         },
         props:[],//接收来自父子件的数据
+        mounted() {
+            getHeaderEffect();
+            this.initUserInfo();
+        },
         methods:{
             signout(){
                 this.$store.commit("signout");
-                this.$router.push('/index');
+                this.$router.push('/login_register');
             },
             search(data) {
-      this.$Message.info(`查询“${data}”`);
-    }
-        },
-        mounted() {
-            getHeaderEffect();
+            this.$Message.info(`查询“${data}”`);
+             },
+
+            // 获取头像
+            initUserInfo(){
+                let _this = this;
+                var url = _this.$store.state.url + 'managemodule/user/selectMyInfo';
+                this.axios({
+                    method: 'GET',
+                    url,
+                    headers: { 'TLUSER': sessionStorage.getItem('token') }
+                }).then(res => {
+                    if (res.status == 200) {
+                        if (res.data.state) {
+                         this.avatar=this.$store.state.url+res.data.row.imgUrl;
+                    }
+                    }
+                })
+                .catch(err => {
+                        console.log(err);
+                 })
+            }
         }
     }
 </script>

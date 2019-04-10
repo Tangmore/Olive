@@ -64,9 +64,8 @@ body{
 #comments{
     box-sizing: border-box;
 }
-#comments:hover{
-   box-shadow: 1px 0  1px 1px #ccc;
-   padding: 1px ;
+.comments-item{
+   border-bottom: 1px solid #ccc;
 }
 
 .orderByWeek tr{

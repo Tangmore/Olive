@@ -1,7 +1,7 @@
 <template>
     <section class="container info pt-4 mt-5 mb-5">
         <div class="row">
-            <div class="col-sm-3 border-right catalog">
+            <div class="col-sm-3 catalog">
                 <div class="w-100">
                     <h4>个人中心</h4>
                     <ul class="pointer_nav_right mt-3 list-unstyled text-left">
@@ -62,43 +62,123 @@
                 </div>
             </div>
 
-
+            <!-- 评论列表 -->
             <div class="col-sm-9" v-show='staticSty.ind==1'>
                 <div class="profile ">
-                    <div v-if='commentsTotal>0'>我的评论</div>
-                        <div v-if="commentsTotal==0">
-                                <p class="p-2 text-muted text-center floor">
-                                    这人很懒，还没有人评论哦！！
-                                </p>
+                    <div v-if='commentsTotal>0'>
+                        <div class="popComment mt-4">
+                            <div id="comments" class="pt-4 pl-2 pr-2 container">
+                                <div class="row ml-0 mr-0 mb-5 pb-3 border-bottom comments-item position-relative" @click="$router.push('/movie_details?id='+item.fkMovieId)"
+                                    v-for='(item,index) in currentPageData'>
+                                    <div class="col-2">
+                                        <img class="img-fluid p-0" style="width: 60%" :src="item.movieImgUrl">
+                                    </div>
+                                    <div class="col-10">
+                                        <div class="one-row ">
+                                            <div class="row text-muted m-0">
+                                                <div class="col text-left p-0">
+                                                    <p class="">
+                                                        <span style='color: #666699;font-weight: bold'>{{item.name}}</span>
+                                                        评论
+                                                        <span style="color: #666699;">{{item.movieName}}</span>
+                                                        <span class="pl-2" style="color: #ccc;font-size: 12px">{{item.createTime}}</span>
+                                                    </p>
+                                                    <p class="content mt-2">
+                                                        {{item.comment}}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            <div class="position-absolute" style="bottom: 0;right: 10px">
+                                                <div class="text-right">
+                                                    <span class="iconfont icon-love" style="color: #fcc">&nbsp;</span>
+                                                    <span>{{item.pointsNum}}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                      <!-- 评论分页 -->
-            <div class="text-right" :class="commentsTotal==0?'d-none':''">
-                    <el-pagination background @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage"
-                        :page-sizes="[6, 8, 10, 20]" :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper" :total="total">
-                    </el-pagination>
-                </div>
+                        </div>
+
+                    </div>
+                    <div v-if="commentsTotal==0">
+                        <p class="p-2 text-muted text-center floor">
+                            这人很懒，还没有人评论哦！！
+                        </p>
+                    </div>
+                    <!-- 评论分页 -->
+                    <div class="text-right" :class="commentsTotal==0?'d-none':''">
+                        <el-pagination background @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage"
+                            :page-sizes="[6, 8, 10, 20]" :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper"
+                            :total="total">
+                        </el-pagination>
+                    </div>
                 </div>
             </div>
 
-
+            <!-- 订单列表 -->
             <div class="col-sm-9" v-show='staticSty.ind==2'>
-                <div class="profile ">
-                    <form class="form-group">
-                        我的订单列表
-                    </form>
+                <div class="profile row  mb-2 border p-1" v-for='item in myOrderArr'>
+                    <div class="col-2">
+                        <img :src="item.movieImgUrl" alt="" class="w-100">
+                    </div>
+                    <div class="col-8 d-flex justify-content-center flex-column">
+                        <p>{{item.movieName}}</p>
+                        <p>时间：{{item.startTime}}</p>
+                        <p v-if='item.isCancel==1' style="color: #f00;font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif">订单已取消！</p>
+
+                        <!-- <p>{{item.cinemaAddress}}+{{item.cinemaName}}+{{item.hallName}}</p> -->
+                        <!-- <p>{{item.orderNum}}</p> -->
+                    </div>
+                    <div class="col-2 d-flex justify-content-center flex-column" style="color: #f00">
+                        {{item.presentPrice}}￥
+                    </div>
+                    <div class="col-8"></div>
+                    <div class="col-4">
+                        <!-- <span class="btn plain border" style='font-size: 12px;border-radius: 4px'></span> -->
+                        <button class="h-btn" @click="checkOrderDetail(item.id)">详情</button>
+                        <button class="h-btn" @click="cancelOrder(item.id)" :disabled='item.isCancel==1'>取消</button>
+                        <button class="h-btn evaluation" @click=" scoreOpened=true" :disabled='item.isCancel==1'>评价</button>
+                        <!-- 订单详情 -->
+                        <Modal v-model="detailOpened" class="order-item-detail">
+                            <div slot="header">详情</div>
+                            <p>电影：{{myOrderItemDeatil.movieName}}</p>
+                            <p>时间：{{myOrderItemDeatil.startTime}}</p>
+                            <p>地址：{{myOrderItemDeatil.cinemaAddress}}{{myOrderItemDeatil.cinemaName}}{{myOrderItemDeatil.hallName}}</p>
+                            <p>位置：
+                                <span class="pr-2" v-for='i of orderSeatPosition'>{{i}}</span>
+                            </p>
+                            <div slot="footer">
+                                <Button @click="detailOpened=false">取消</Button>
+                            </div>
+                        </Modal>
+                        <!-- 评分 -->
+                        <Modal v-model="scoreOpened">
+                            <div slot="header">评分</div>
+                            <p>
+                                <Rate v-model="movieScore"></Rate>
+                            </p>
+                            <div slot="footer">
+                                <Button color="primary" @click="scoreConfirm(item.id)">确认</Button>
+                                <Button @click="scoreOpened=false">取消</Button>
+                            </div>
+                        </Modal>
+                    </div>
                 </div>
             </div>
+
+
 
             <div class="col-sm-9" v-show='staticSty.ind==3'>
                 <div class="profile ">
                     <form class="form-group">
-                            <div class="row m-2 mt-2">
-                                    <label for='password' class="col-2 control-label p-0 col-2">原密码：</label>
-                                    <div class="col-6 col-10">
-                                        <input type="password" class="form-control" id="password"  v-model='originalPwd'>
-                                        <!-- <p class="tips" v-show='upwdAck.flag'>{{upwdAck.tip}}</p> -->
-                                    </div>
-                                </div>
+                        <div class="row m-2 mt-2">
+                            <label for='password' class="col-2 control-label p-0 col-2">原密码：</label>
+                            <div class="col-6 col-10">
+                                <input type="password" class="form-control" id="password" v-model='originalPwd'>
+                                <!-- <p class="tips" v-show='upwdAck.flag'>{{upwdAck.tip}}</p> -->
+                            </div>
+                        </div>
                         <div class="row m-2 mt-2">
                             <label for='password' class="col-2 control-label p-0 col-2">新密码：</label>
                             <div class="col-6 col-10">
@@ -148,7 +228,7 @@
                     ind: 0,
                 },
                 info: {
-                    infoList: { name: '', phone: '', imgUrl: '' ,id:''},
+                    infoList: { name: '', phone: '', imgUrl: '', id: '' },
                     originInfoList: { name: '', phone: '', imgUrl: '' },
                     count: 0
                 },
@@ -159,7 +239,7 @@
                 subAck: { tip: '', flag: false },
                 upwdAck: { tip: '', flag: false },
                 upwdAgainAck: { tip: '', flag: false },
-                originalPwd:'',
+                originalPwd: '',
 
                 pwdSubAck: {
                     tip: '', flag: false
@@ -173,14 +253,22 @@
                 uploadAction: this.$store.state.url + 'filemodule/file/uploadFile',
 
                 // 我的评论
-                 currentPageData: [],
+                currentPageData: [],
                 // 每页显示条数
                 pageSize: 6,
                 // 当前页
                 currentPage: 1,
                 // 总条数
                 total: 0,
-                commentsTotal:0
+                commentsTotal: 0,
+                myOrderArr: [],
+                // 订单详情
+                myOrderItemDeatil: {},
+                orderSeatPosition: [],
+                detailOpened: false,
+                scoreOpened: false,
+                movieScore: 0
+
             }
         },
         created() {
@@ -188,7 +276,8 @@
         },
         mounted() {
             this.getInfo();
-            this.getMyComments(this.pageSize,this.currentPage);
+            this.getMyComments(this.pageSize, this.currentPage);
+            this.initMyOrders();
         },
         methods: {
             // 验证上传图片的格式
@@ -222,7 +311,7 @@
                 this.info.infoList.imgUrl = res.row;
                 this.imageUrl = this.$store.state.url + res.row;
             },
-          
+
             tabChange(index) {
                 this.staticSty.ind = index;
                 this.staticSty.ifShow = false;
@@ -261,21 +350,22 @@
             },
             //我的评论
             getMyComments(pageSize, currentPage) {
-                var url=this.$store.state.url + "managemodule/comment/selectPageByUserId";
+                var url = this.$store.state.url + "managemodule/comment/selectPageByUserId";
                 this.axios({
-                    method:'GET',
+                    method: 'GET',
                     url,
                     params: { pageSize: pageSize, currentPage: currentPage },
-                    headers:{'TLUSER':sessionStorage.getItem('token')}})
+                    headers: { 'TLUSER': sessionStorage.getItem('token') }
+                })
                     .then(res => {
                         console.log(res);
                         if (res.status == 200) {
                             if (res.data.rows) {
                                 this.total = res.data.total;
-                                // for (var item of res.data.rows) {
-                                //     // item.imgUrl = this.$store.state.url + item.imgUrl;
-                                //     // console.log(item.imgUrl)
-                                // }
+                                for (var item of res.data.rows) {
+                                    item.movieImgUrl = this.$store.state.url + item.movieImgUrl;
+                                    // console.log(item.imgUrl)
+                                }
                                 this.currentPageData = res.data.rows;
                                 this.commentsTotal = this.currentPageData.length;
                             } else {
@@ -287,6 +377,7 @@
                         console.log(err);
                     })
             },
+            // 分页
             handleSizeChange(val) {
                 this.currentPageData = [];
                 this.page = 0;
@@ -322,7 +413,7 @@
                     this.axios.get(this.$store.state.url + "managemodule/user/checkName",
                         { params: { name: this.info.infoList.name } }).then(res => {
                             if (!res.data.state) {
-                                this.unameAck.tip = res.data.msg+'!';
+                                this.unameAck.tip = res.data.msg + '!';
                                 this.unameAck.flag = true;
                                 this.ackAllFlag = false;
                             } else {
@@ -371,7 +462,7 @@
                             name: this.info.infoList.name,
                             phone: this.info.infoList.phone,
                             imgUrl: this.info.infoList.imgUrl,
-                            id:this.info.infoList.id
+                            id: this.info.infoList.id
                         }
                     }).then(res => {
                         console.log(res.data.state)
@@ -423,23 +514,107 @@
                         method: 'POST',
                         url: this.$store.state.url + "managemodule/user/updatePassWordUser",
                         data: {
-                            originalPassword:this.originalPwd,
+                            originalPassword: this.originalPwd,
                             currentPassword: this.newPwd
                         },
-                        headers:{'TLUSER':sessionStorage.getItem('token')}
+                        headers: { 'TLUSER': sessionStorage.getItem('token') }
                     }).then(res => {
-                        if(res.data.state){
+                        if (res.data.state) {
                             this.pwdSubAck.flag = true;
                             this.pwdSubAck.tip = res.data.msg;
                             this.$router.push('/login_register');
-                        }else{
+                        } else {
                             this.pwdSubAck.flag = true;
                             this.pwdSubAck.tip = res.data.msg;
                         }
 
                     })
                 }
+            },
+            // 订单列表
+            initMyOrders() {
+                this.axios({
+                    method: 'GET',
+                    url: this.$store.state.url + "managemodule/orders/userSelectPageOrder",
+                    headers: { 'TLUSER': sessionStorage.getItem('token') }
+                }).then(res => {
+                    //    console.log(res)
+                    for (var item of res.data.rows) {
+                        item.movieImgUrl = this.$store.state.url + item.movieImgUrl;
+                    }
+                    this.myOrderArr = res.data.rows;
+
+                }).catch(err => {
+                    console.log(err);
+                })
+            },
+            //   订单详情
+            checkOrderDetail(id) {
+                this.detailOpened = true;
+                this.axios({
+                    method: 'GET',
+                    url: this.$store.state.url + "managemodule/orders/selectOrdersById?id=" + id,
+                    headers: { 'TLUSER': sessionStorage.getItem('token') }
+                }).then(res => {
+                    console.log(res)
+                    for (var item of res.data.row.positions) {
+                        this.orderSeatPosition.push(item.lineNum + '行' + item.colNum + '列');
+                        console.log(this.orderSeatPosition)
+                    }
+
+                    this.myOrderItemDeatil = res.data.row;
+                }).catch(err => {
+                    console.log(err);
+                })
+
+            },
+            //取消订单
+            cancelOrder(id) {
+                this.$confirm('删除操作不可撤销，您确定吗？', '提示', { type: 'warning' })
+                    .then(() => {
+                        this.axios({
+                            method: 'POST',
+                            url: this.$store.state.url + "managemodule/orders/cancelOrders",
+                            data: { id },
+                            headers: { 'TLUSER': sessionStorage.getItem('token') }
+                        }).then(res => {
+                            if (res.data.state) {
+                                this.$message.success('订单取消成功');
+                                this.initMyOrders();
+                            }
+
+                        }).catch(err => {
+                            console.log(err);
+                        })
+                    }).catch(() => {
+                        this.$message({
+                            type: 'info',
+                            message: '已取消删除'
+                        })
+                    })
+            },
+            //评价
+            scoreConfirm(id) {
+                if (this.movieScore != 0) {
+                    this.axios({
+                        method: 'POST',
+                        url: this.$store.state.url + "managemodule/orders/score",
+                        data: { id: id, score: this.movieScore * 2 },
+                        headers: { 'TLUSER': sessionStorage.getItem('token') }
+                    }).then(res => {
+                        console.log(res)
+                        if (res.data.state) {
+                            this.scoreOpened = false;
+                        }
+                    }).catch(err => {
+                        console.log(err);
+                    })
+                } else {
+                    this.$message.error('请添加评分！');
+                    return;
+                }
             }
+
         }
     }
 </script>
@@ -470,5 +645,17 @@
         width: 178px;
         height: 178px;
         display: block;
+    }
+
+    .evaluation {
+        font-size: 12px;
+        border-radius: 4px;
+        border: 1px solid #FF9800;
+        display: inline-block;
+        color: #FF9800;
+    }
+
+    .order-item-detail p {
+        padding-top: 6px;
     }
 </style>

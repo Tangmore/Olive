@@ -52,7 +52,7 @@
               </div>
             <!--搜索icon-->
               <div class="d-none col-auto d-md-inline order-md-3   h-input-prefix-icon">
-                    <Search @search="search" v-model="searchText2" position="front" trigger-type="input"></Search>
+                    <Search @search="searchAll" v-model="searchText1"></Search>
                   </div>
           </nav>
       
@@ -66,10 +66,7 @@
     export default {
         data(){
             return {
-                activeTab:"index",
-               message:"header的生命周期：",
-               searchText2: null,
-
+               searchText1: null,
                isLogin:sessionStorage.getItem('token')?sessionStorage.getItem('token'):'',
                avatar:''
             }
@@ -79,13 +76,15 @@
             getHeaderEffect();
             this.initUserInfo();
         },
+   
         methods:{
             signout(){
                 this.$store.commit("signout");
                 this.$router.push('/login_register');
             },
-            search(data) {
-            this.$Message.info(`查询“${data}”`);
+            // 全局搜索
+            searchAll(data) { 
+                this.$router.push('/search?content='+data);
              },
 
             // 获取头像

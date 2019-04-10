@@ -1,5 +1,5 @@
 <template>
-       <footer class="pt-4 ">
+       <footer class="pt-4 app">
         <div class="container-fluid text-center">
             <div class="text-center mb-2 title pb-1" > 
                 <div>

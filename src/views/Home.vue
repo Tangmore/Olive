@@ -2,7 +2,7 @@
   <div  v-cloak class="position-relative">
     <Header></Header>
     <router-view v-if="reloadable"></router-view>
-    <toTop></toTop>
+    <Animation></Animation>
     <Footer></Footer>
   </div>
 </template>
@@ -12,7 +12,8 @@
 // @ is an alias to /src
 import Header from '@/components/Header.vue'
 import Footer from '@/components/Footer.vue'
-import toTop from '@/components/toTop.vue'
+// import toTop from '@/components/toTop.vue'
+import Animation from '@/components/animation.vue'
 export default {
   provide(){
       return {
@@ -35,7 +36,7 @@ export default {
   components: {
     Header,
     Footer,
-    toTop
+    Animation
   }
 }
 </script>

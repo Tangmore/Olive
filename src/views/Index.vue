@@ -67,30 +67,30 @@
                         </div>
                
                         <div id="comments" class="pt-4 pl-2 pr-2 container">
-                            <div class="row ml-0 mr-0 mb-3  position-relative" @click="jumpToDetail(item.tid,$event)">
-                                <div class="col-3">
-                                    <img class="img-fluid p-0 w-60" src="http://127.0.0.1:83movieImg/love/mo6.jpg">
+                            <div class="row ml-0 mr-0 mb-5 pb-3  comments-item position-relative" @click="$router.push('/movie_details?id='+item.fkMovieId)" v-for='(item,index) in top10CommentArr'>
+                                <div class="col-2">
+                                    <img class="img-fluid p-0 w-60" :src="item.movieImgUrl">
                                 </div>
                                 <div class="col-9">
                                     <div class="one-row ">
                                         <div class="row text-muted m-0">
-                                            <div class="col text-left p-0">
-                                                <p class="">
-                                                    <span>云淡风轻</span>
-                                                    评论
-                                                    <span>《步履不停》</span>
-                                                </p>
-                                                <p class="content">
-                                                    “所谓主角，是指即便没有出现在画面上，但仍然支配着整部电影的人。但到 底支配着什么呢？
-                                                    就是台词动作、情感，有时还包括剪辑。总而言之， 电影主角就是与镜头这一侧的导
-                                                    演呼吸频率同步的人。”...
-                                                </p>
-                                            </div>
+                                             <div class="col text-left p-0">
+                                        <p class="">
+                                            <img style="width: 26px;height: 26px" :src="item.imgUrl" alt="">
+                                            <span style='color: #666699;font-weight: bold'>{{item.name}}</span>
+                                            评论
+                                            <span style="color: #666699;">{{item.movieName}}</span>
+                                            <span class="pl-2" style="color: #ccc;font-size: 12px">{{item.createTime}}</span>
+                                        </p>
+                                        <p class="content mt-2">
+                                            {{item.comment}}
+                                        </p>
+                                    </div>
                                         </div>
-                                        <div class="position-absolute" style="bottom: 10px;right: 10px">
+                                        <div class="position-absolute" style="bottom: 0;right: 10px">
                                             <div class="text-right">
                                                 <span class="iconfont icon-love" style="color: #fcc">&nbsp;</span>
-                                                <span>点赞数</span>
+                                                <span>{{item.pointsNum}}</span>
                                             </div>
                                         </div>
                                     </div>
@@ -160,7 +160,8 @@
                 loginAlertMsg: "请先登录 !",
                 loginAlertBgColor: "bg-dark position-fixed",
 
-                top10MovieArr:[]
+                top10MovieArr:[],
+                top10CommentArr:[]
             }
         },
    
@@ -218,6 +219,18 @@
                     }
                 })
             },
+            initTop10Comment(){
+                  this.axios.get(this.$store.state.url + 'managemodule/comment/selectAll').then(res => {
+                    if (res.status == 200) {
+                        console.log(res)
+                        for(var item of res.data.rows){
+                         item.movieImgUrl = this.$store.state.url + item.movieImgUrl;
+                            item.imgUrl = this.$store.state.url + item.imgUrl;
+                        }
+                        this.top10CommentArr=res.data.rows;
+                    }
+                })
+            }
         },
         created() {
             this.carouselTask();
@@ -226,6 +239,7 @@
         mounted() {
             this.initMovieList();
             this.initNextTen();
+            this.initTop10Comment();
         }
     }
 </script>

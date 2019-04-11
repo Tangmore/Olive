@@ -13,6 +13,7 @@
                     </ul>
                 </div>
             </div>
+            <!-- 个人信息 -->
             <div class="col-sm-9" v-show='staticSty.ind==0'>
                 <div class="profile ">
                     <p>
@@ -39,15 +40,17 @@
                             <div class="row m-2 mt-3">
                                 <label for='balance' class="col-2 control-label p-0">余额：</label>
                                 <div class="col-10">
-                                    <input type="text " class="form-control" disabled id="balance" style='text-indent:6px' v-model='info.infoList.balance' @blur="ackUname">
+                                    <!-- <input type="text " class="form-control" disabled id="balance" style='text-indent:6px' v-model='info.infoList.balance' @blur="ackUname"> -->
                                     <!-- <p class="tips" v-show='unameAck.flag'>{{unameAck.tip}}</p> -->
+                                    <span>{{info.infoList.balance}}￥</span>
                                 </div>
                             </div>
 
                             <div class="row m-2 mt-3">
                                 <label for='phone' class="col-2 control-label p-0">手机号:</label>
                                 <div class="col-10">
-                                    <input type="text" class="form-control" id="phone" v-model='info.infoList.phone' @blur='ackPhone'>
+                                    <input type="text " class="form-control" id="phone" style='text-indent:6px' v-model='info.infoList.phone' @blur="ackPhone">
+                                    <!-- <input type="text" class="form-control" id="phone" v-model='info.infoList.phone' @blur='ackPhone'> -->
                                     <p class="tips" v-show='phoneAck.flag'>{{phoneAck.tip}}</p>
                                 </div>
                             </div>
@@ -127,8 +130,6 @@
                         <p>时间：{{item.startTime}}</p>
                         <p v-if='item.isCancel==1' style="color: #f00;font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif">订单已取消！</p>
 
-                        <!-- <p>{{item.cinemaAddress}}+{{item.cinemaName}}+{{item.hallName}}</p> -->
-                        <!-- <p>{{item.orderNum}}</p> -->
                     </div>
                     <div class="col-2 d-flex justify-content-center flex-column" style="color: #f00">
                         {{item.presentPrice}}￥
@@ -137,7 +138,7 @@
                     <div class="col-4">
                         <!-- <span class="btn plain border" style='font-size: 12px;border-radius: 4px'></span> -->
                         <button class="h-btn" @click="checkOrderDetail(item.id)">详情</button>
-                        <button class="h-btn" @click="cancelOrder(item.id)" :disabled='item.isCancel==1'>取消</button>
+                        <button class="h-btn" @click="cancelOrder(item.id,item.startTime)" :disabled='item.isCancel==1'>取消</button>
                         <button class="h-btn evaluation" @click=" scoreOpened=true" :disabled='item.isCancel==1'>评价</button>
                         <!-- 订单详情 -->
                         <Modal v-model="detailOpened" class="order-item-detail">
@@ -167,9 +168,26 @@
                 </div>
             </div>
 
-
-
+            <!-- 消费记录 -->
             <div class="col-sm-9" v-show='staticSty.ind==3'>
+                <div class="profile row  mb-2 border p-1" v-for='item in expenciceRecode'>
+                    <div class="col-8 d-flex justify-content-center flex-column">
+                        <p>时间：{{item.createTime}}</p>
+
+                        <p>订单号：{{item.orderNum}}</p>
+                    </div>
+                    <div class="col-2 d-flex justify-content-center flex-column" style="color: #f00">
+                        <!-- {{item.balance}}￥ -->
+                        <span style="color: #f00;font-family: 'Gill Sans',
+                                'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif" v-if='item.state==1'>消费：{{item.balance}}￥</span>
+                        <span style="color: #f00;font-family: 'Gill Sans',
+                                'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif" v-if='item.state==2'>退款：{{item.balance}}￥</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 账号安全 -->
+            <div class="col-sm-9" v-show='staticSty.ind==4'>
                 <div class="profile ">
                     <form class="form-group">
                         <div class="row m-2 mt-2">
@@ -222,6 +240,7 @@
                         { icon: 'icon-wodexinxi', title: '我的信息' },
                         { icon: 'icon-youji1', title: '我的评论' },
                         { icon: 'icon-wodexinxi', title: '我的订单' },
+                        { icon: 'icon-youji1', title: '消费记录' },
                         { icon: 'icon-zhanghaoanquan', title: '账号安全' },
                     ],
                     ifShow: false,
@@ -267,17 +286,20 @@
                 orderSeatPosition: [],
                 detailOpened: false,
                 scoreOpened: false,
-                movieScore: 0
+                movieScore: 0,
+                // 消费记录
+                expenciceRecode: []
 
             }
         },
         created() {
-            this.getInfo();
+            // this.getInfo();
         },
         mounted() {
             this.getInfo();
             this.getMyComments(this.pageSize, this.currentPage);
             this.initMyOrders();
+            this.getExpenciceRecode();
         },
         methods: {
             // 验证上传图片的格式
@@ -556,7 +578,7 @@
                     url: this.$store.state.url + "managemodule/orders/selectOrdersById?id=" + id,
                     headers: { 'TLUSER': sessionStorage.getItem('token') }
                 }).then(res => {
-                    console.log(res)
+                    // console.log(res)
                     for (var item of res.data.row.positions) {
                         this.orderSeatPosition.push(item.lineNum + '行' + item.colNum + '列');
                         console.log(this.orderSeatPosition)
@@ -569,7 +591,14 @@
 
             },
             //取消订单
-            cancelOrder(id) {
+            cancelOrder(id, startTime) {
+                var thisTime = startTime.replace(/-/g, '/');
+                thisTime = new Date(thisTime).getTime();
+                var now=new Date().getTime();
+                if((thisTime-now)<3600000){
+                    this.$message.error('已过取消订单时间！');
+                    return;
+                }
                 this.$confirm('删除操作不可撤销，您确定吗？', '提示', { type: 'warning' })
                     .then(() => {
                         this.axios({
@@ -581,6 +610,7 @@
                             if (res.data.state) {
                                 this.$message.success('订单取消成功');
                                 this.initMyOrders();
+                                this.getInfo();
                             }
 
                         }).catch(err => {
@@ -602,7 +632,7 @@
                         data: { id: id, score: this.movieScore * 2 },
                         headers: { 'TLUSER': sessionStorage.getItem('token') }
                     }).then(res => {
-                        console.log(res)
+                        // console.log(res)
                         if (res.data.state) {
                             this.scoreOpened = false;
                         }
@@ -613,6 +643,20 @@
                     this.$message.error('请添加评分！');
                     return;
                 }
+            },
+            // 消费记录
+            getExpenciceRecode() {
+                this.axios({
+                    method: 'GET',
+                    url: this.$store.state.url + "managemodule/record/selectPageRecord",
+                    headers: { 'TLUSER': sessionStorage.getItem('token') }
+                }).then(res => {
+                    console.log('消费记录')
+                    console.log(res)
+                    this.expenciceRecode = res.data.rows;
+                }).catch(err => {
+                    console.log(err);
+                })
             }
 
         }

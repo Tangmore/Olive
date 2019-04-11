@@ -184,6 +184,7 @@
                 this.currentPage = val;
                 this.getComments(this.pageSize, val);
             },
+            // 用户评论
             submitComment() {
                 if (this.myComment.length > 300) {
                     this.$message.error('评论字数保持在300以内！');
@@ -199,6 +200,8 @@
                  .then(res => {
                         if (res.data.state) {
                             this.$message.success(res.data.msg);
+                            this.myComment='';
+                            this.selectIsLogin();
                         } else {
                             this.$router.push('/login_register');
                         }

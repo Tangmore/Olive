@@ -36,8 +36,8 @@
                     d-md-inline-flex justify-content-md-around align-items-md-center" data-target="collapse_navbar">
                       <div class="d-md-none">
                           <form>
-                              <span class="iconfont icon-sousuo"></span>
-                              <input type="text" name="search" placeholder="搜索...">
+                            
+                              <Search style='width:100%' @search="searchAll" v-model="searchText1"></Search>
                           </form>
                       </div>
                       <ul id="nav-items" class="d-md-inline-flex justify-content-md-around m-0">

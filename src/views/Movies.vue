@@ -40,7 +40,7 @@
                 <!-- 电影分页 -->
                 <div class="text-right">
                     <el-pagination background @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage"
-                        :page-sizes="[6, 8, 10, 20]" :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper" :total="total">
+                        :page-sizes="[12, 18]" :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper" :total="total">
                     </el-pagination>
                 </div>
             </div>
@@ -62,7 +62,7 @@
                 popMovieList: {
                     imgList: [],
                 },
-                pageSize: 6,
+                pageSize: 12,
                 // 当前页
                 currentPage: 1,
                 // 总条数
@@ -129,13 +129,13 @@
                 this.total = 0;
                 // console.log(`每页 ${val} 条`);
                 this.pageSize = val;
-                this.getComments(val, this.currentPage);
+                  this.initMovieList(this.typeId, this.orderById);
             },
             handleCurrentChange(val) {
                 this.popMovieList.imgList = []
                 // console.log(`当前页: ${val}`);
                 this.currentPage = val;
-                this.getComments(this.pageSize, val);
+                  this.initMovieList(this.typeId, this.orderById);
             },
 
 

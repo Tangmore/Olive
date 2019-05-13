@@ -54,8 +54,8 @@
                 },
                 tabsParam: {
                     module1: '热门评论',
-                    module2: '最近发表',
-                    module3: '全部发表'
+                    // module2: '最近发表',
+                    // module3: '全部发表'
                 },
                 tsbselected: 'module1'
             }

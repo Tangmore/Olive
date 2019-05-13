@@ -16,7 +16,8 @@
               </a>
               <!--个人中心-->
               <div v-if="isLogin" class="col col-md-auto order-md-4 position-relative iconfont  text-right p-md-0 personal" :class="avatar?'':'icon-login1_1'" data-trigger="toggle">
-                 <img v-if='avatar' :src="avatar" alt="" style="border-radius: 100%;">
+                 <img v-if='hasavatar' :src="avatar" alt="" style="border-radius: 100%;"/>
+                 <span v-else class="col iconfont icon-login1_0"> </span>
                   <div class="position-absolute flex-column pr-3 p-md-0 d-none" data-target="toggleItem">
                       <div class="align-self-end mr-2"></div>
                       <ul class="pl-3 pr-3 speed">
@@ -68,7 +69,8 @@
             return {
                searchText1: null,
                isLogin:sessionStorage.getItem('token')?sessionStorage.getItem('token'):'',
-               avatar:''
+               avatar:'',
+               hasavatar:false
             }
         },
         props:[],//接收来自父子件的数据
@@ -98,6 +100,8 @@
                 }).then(res => {
                     if (res.status == 200) {
                         if (res.data.state) {
+                            console.log(res.data.row.imgUrl)
+                        this.hasavatar=res.data.row.imgUrl?res.data.row.imgUrl:'';
                          this.avatar=this.$store.state.url+res.data.row.imgUrl;
                     }
                     }

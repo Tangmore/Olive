@@ -111,7 +111,7 @@
                         <p>场次：{{chooseAddressObj.startTime}}</p>
                         <p>票价：{{chooseAddressObj.price}}</p>
                         <p>座位：
-                            <span v-for='item in chooseSeatStringArr'>{{item}}</span>
+                            <span v-for='item in chooseSeatStringArr'>{{item}}&nbsp;</span>
                         </p>
                         <p>原价：{{originalPrice}}￥</p>
                         <p v-show='discount'>折扣：{{discount}}</p>
@@ -243,9 +243,6 @@
             },
             //点击选座座位
             toBuySeat(id, line, col, e) {
-                // for(var i=0;i<this.chooseSeatArr.length;i++){
-                //     if()
-                // }
                 if(this.chooseSeatArr.indexOf(id)==-1){
                      this.chooseSeatArr.push(id);
                 let seat = line + '排' + col + '座';

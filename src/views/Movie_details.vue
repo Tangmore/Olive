@@ -25,7 +25,7 @@
                                     <span class="btn wanted">
                                         <i class="iconfont icon-love "></i>想看</span>
                                 </p>
-                                    <router-link class="btn buy" target="_blank" :to="'/movies?'+movieDetail.id" style="color: #fff;outline: none">特惠购票</router-link>
+                                <a class="btn buy" @click="$router.push('/tickets?id='+movieDetail.id)" style="color: #fff;outline: none"  target="_blank" >特惠购票</a>
                             </div>
                         </div>
                         <div class="col-4 d-flex justify-content-center movie-praise flex-column">

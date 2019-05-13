@@ -160,7 +160,7 @@
                                 <Rate v-model="movieScore"></Rate>
                             </p>
                             <div slot="footer">
-                                <Button color="primary" @click="scoreConfirm(item.id)">确认</Button>
+                                <Button color="primary" @click="scoreConfirm(item.id,item.startTime)">确认</Button>
                                 <Button @click="scoreOpened=false">取消</Button>
                             </div>
                         </Modal>
@@ -624,7 +624,19 @@
                     })
             },
             //评价
-            scoreConfirm(id) {
+            scoreConfirm(id,startTime) {
+                //未到观影时间 不能进行评分
+                   var thisTime = startTime.replace(/-/g, '/');
+                thisTime = new Date(thisTime).getTime();
+                var now=new Date().getTime();
+                if(thisTime-now>0){
+                    this.$message.error('未到观影时间，请观影后进行评价！');
+                    setTimeout(()=>{
+                        this.scoreOpened=false;
+                    },800)
+                    return;
+                }
+                // console.log(startTime)
                 if (this.movieScore != 0) {
                     this.axios({
                         method: 'POST',

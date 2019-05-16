@@ -15,7 +15,7 @@
                   <img id="brand" :src="this.$store.state.url+'systemImg/'+'lemon_logo_black.png'">
               </a>
               <!--个人中心-->
-              <div v-if="isLogin" class="col col-md-auto order-md-4 position-relative iconfont  text-right p-md-0 personal" :class="avatar?'':'icon-login1_1'" data-trigger="toggle">
+              <div v-if="isLogin" class="col col-md-auto order-md-4 position-relative iconfont  text-right p-md-0 personal"  data-trigger="toggle">
                  <img v-if='hasavatar' :src="avatar" alt="" style="border-radius: 100%;"/>
                  <span v-else class="col iconfont icon-login1_0"> </span>
                   <div class="position-absolute flex-column pr-3 p-md-0 d-none" data-target="toggleItem">

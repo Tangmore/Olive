@@ -106,7 +106,7 @@
                     <p class="mb-4" style="color: #ffb400;font-size: 18px"> 热映Top10</p>
                     <div class="orderByWeek">
                         <table class="w-100">
-                            <tr v-for='(item,index) in top10MovieArr'>
+                            <tr v-for='(item,index) in top10MovieArr' @click="$router.push('/movie_details?id='+item.id)">
                                 <td style="color: #ffb400">{{index+1}}</td>
                                 <td>{{item.movieName}}</td>
                             </tr>

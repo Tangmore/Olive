@@ -2,7 +2,7 @@
   <div  v-cloak class="position-relative">
     <Header></Header>
     <router-view v-if="reloadable"></router-view>
-    <Animation></Animation>
+    <!-- <Animation></Animation> -->
     <Footer></Footer>
   </div>
 </template>

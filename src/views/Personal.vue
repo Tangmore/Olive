@@ -329,6 +329,7 @@
             //上传成功后 客户端得到响应消息
             handleSuccess(res, file) {
                 // console.log(res)
+                this.ackAllFlag=true;
                 this.$message.success(res.msg);
                 this.info.infoList.imgUrl = res.row;
                 this.imageUrl = this.$store.state.url + res.row;
@@ -494,6 +495,7 @@
                             if (this.info.infoList.phone == this.info.originInfoList.phone) {
                                 // this.$router.push('/'); 
                                 this.getInfo();
+                                // history.go(0);
                             } else {
                                 this.$store.commit("signout");
                                 this.$router.push('/');

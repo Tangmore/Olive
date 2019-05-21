@@ -32,11 +32,11 @@
                             <p>用户评分：
                                 <p class="praise pt-1">{{movieDetail.praise}}</p>
                             </p>
-                            <p class="mt-3">累计观看：
+                            <!-- <p class="mt-3">累计观看：
                                 <p class="view-count" style="font-size: 30px">{{movieDetail.browseNum}}
                                     <span style="font-size: 12px">人次</span>
                                 </p>
-                            </p>
+                            </p> -->
                         </div>
                     </div>
                 </div>

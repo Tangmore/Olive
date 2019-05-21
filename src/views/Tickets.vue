@@ -20,23 +20,21 @@
                             </div>
                             <div class="mt-3">
                                 <p class="float-left">
-                                    <!-- <a class="btn comment" style='color:#fff' href='#commentBox'> -->
-                                    <!-- <i class="iconfont icon-dianping"></i>评论</a> -->
                                     <p class="btn wanted">
                                         <i class="iconfont icon-love "></i>想看</p>
                                 </p>
-                                <router-link class="btn buy" target="_blank" to='/movies' style="color: #fff;outline: none">查看更多电影详情</router-link>
+                                 <a class="btn buy" @click="$router.push('/movies')" style="color: #fff;outline: none"  target="_blank" >查看更多电影详情</a>
                             </div>
                         </div>
                         <div class="col-4 d-flex justify-content-center movie-praise flex-column">
                             <p>用户评分：
                                 <p class="praise pt-1">{{movieDetail.praise}}</p>
                             </p>
-                            <p class="mt-3">累计观看：
+                            <!-- <p class="mt-3">累计观看：
                                 <p class="view-count" style="font-size: 30px">{{movieDetail.browseNum}}
                                     <span style="font-size: 12px">人次</span>
                                 </p>
-                            </p>
+                            </p> -->
                         </div>
                     </div>
                 </div>

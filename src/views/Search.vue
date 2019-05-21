@@ -92,13 +92,13 @@
                 this.total = 0;
                 console.log(`每页 ${val} 条`);
                 this.pageSize = val;
-                this.infoInit(val, this.currentPage);
+                this.movienameSearch(val, this.currentPage);
             },
             handleCurrentChange(val) {
                 this.currentPageData = []
                 console.log(`当前页: ${val}`);
                 this.currentPage = val;
-                this.infoInit(this.pageSize, val);
+                this.movienameSearch(this.pageSize, val);
             },
 
             jumpToDetail(id) {
